@@ -1,11 +1,6 @@
-import Button from '../src/component/Button';
+import Layout from "../src/layout/Layout";
 function App() {
-  return (
-    <div className="App">
-      <Button 
-      /> 
-    </div>
-  );
+  return <Layout />;
 }
 
 export default App;
