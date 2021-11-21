@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Button from "../component/Button";
 
 const PopUp = (props) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const handleCloseModal = () => {
     setOpen(false);
@@ -15,7 +15,7 @@ const PopUp = (props) => {
 
   useEffect(() => {
     setOpen(props.open);
-  }, [props.open, props.contents]);
+  }, [props.open ]);
 
   return (
     <Container open={open}>

@@ -8,22 +8,28 @@ const FileUpload = (props) => {
   };
 
   const handleChangeUpload = (e) => {
-    const fileUpload = e.target.files[0];
-    props.handleFile(fileUpload);
+    props.handleFile(e);
   };
 
   return (
     <>
-      <Button text={"파일 업로드"} onClick={(e) => handleClick(e)} />
+      <Button text={props.text} onClick={(e) => handleClick(e)} />
       <input
         type="file"
-        accept={".xls,.xlsx"}
+        id={props.id}
+        accept={props.extension}
         ref={fileInputInfo}
         style={{ display: "none" }}
         onChange={(e) => handleChangeUpload(e)}
       />
     </>
   );
+};
+
+FileUpload.defaultProps = {
+  extension: ".xls,.xlsx",
+  text: "파일 업로드",
+  id: "",
 };
 
 export default FileUpload;
