@@ -21,7 +21,7 @@ const Contents = (props) => {
     // } else {
     //   setFilesInfo({ [e.target.id]: e.target.files[0] });
     // }
-
+    setExcelData([...[]]);
     setFilesInfo({
       ...filesInfo,
       [e.target.id]: e.target.files[0],
@@ -48,27 +48,56 @@ const Contents = (props) => {
         const wsName = wb.SheetNames[0];
 
         let worksheet = wb.Sheets[wsName];
+        // let headerSheet = wb.Sheets[wsName];
+        // headerSheet["!ref"] = "A1:C1";
+        // const data_1 = XLSX.utils.sheet_to_json(headerSheet, { header: 1 });
+        // console.log(data_1);
+
+        // if (data_1[0].length <= 0) {
+        //   alert("올바른 형태가 아닙니다.");
+        //   return false;
+        // }
+
+        //  console.dir(data_1, { depths: null, colors: true });
 
         let row;
         let rowNum;
         let colNum;
         let range = XLSX.utils.decode_range(worksheet["!ref"]);
+
+        if (range.s.r !== 0) {
+          alert("올바른 형태가 아닙니다.");
+          return false;
+        }
+
         for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
           row = [];
           for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
             var nextCell =
               worksheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
+            console.log(rowNum);
+            if (rowNum === 0) {
+              console.log(nextCell);
+            }
             if (typeof nextCell === "undefined") {
               row.push(void 0);
             } else row.push(nextCell.w);
           }
           result.push(row);
         }
-        setExcelData({ ...excelData, result: result });
+        let _data = result[0].filter((e) => e === undefined);
+        console.log(_data);
+        if (_data.length > 0) {
+          alert("header와 데이터가 올바른 형태가 아닙니다.");
+          setExcelData([]);
+          return false;
+        } else {
+          setExcelData({ ...excelData, result: result });
+        }
       };
       reader.readAsBinaryString(files);
     }
-  }; 
+  };
 
   const uploadContents = useCallback(() => {
     return (
@@ -92,8 +121,6 @@ const Contents = (props) => {
         <TABLE>
           {Object.keys(excelData).length > 0 &&
             excelData["result"].map((item, idx) => {
-              console.log("test");
-              console.log(item);
               return (
                 <TR>
                   {item.map((it, ins) => {
