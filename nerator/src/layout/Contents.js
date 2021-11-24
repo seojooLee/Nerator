@@ -10,6 +10,7 @@ const Contents = (props) => {
   const [fileName, setFileName] = useState("");
   const [filesInfo, setFilesInfo] = useState([]);
   const [excelData, setExcelData] = useState(new Object());
+  const [popType, setPopType] = useState("");
 
   const handleUploadFile = (e) => {
     // if (filesInfo.length > 0) {
@@ -99,6 +100,28 @@ const Contents = (props) => {
     }
   };
 
+  const dataListView = useCallback(() => {
+    return (
+      <>
+        <TABLE>
+          {Object.keys(excelData).length > 0 ? (
+            excelData["result"].map((item, idx) => {
+              return (
+                <TR>
+                  {item.map((it, ins) => {
+                    return <TD>{it}</TD>;
+                  })}
+                </TR>
+              );
+            })
+          ) : (
+            <SelectHeader>데이터가 없습니다.</SelectHeader>
+          )}
+        </TABLE>
+      </>
+    );
+  }, [excelData]);
+
   const uploadContents = useCallback(() => {
     return (
       <>
@@ -129,24 +152,10 @@ const Contents = (props) => {
                 </TR>
               );
             })}
-
-          {/* {excelData.map((item, idx) => {
-            console.log("test ");
-            console.log(item);
-            return (
-              <TR>
-                <TD>{item}</TD>
-              </TR>
-            );
-          })} */}
         </TABLE>
       </>
     );
   }, [excelData, filesInfo]);
-
-  const handleOpenListUpload = useCallback(() => {
-    setOpen(true);
-  }, [open]);
 
   const handleCloseListUpload = useCallback(
     (e) => {
@@ -160,15 +169,29 @@ const Contents = (props) => {
     setOpen(false);
   }, [open]);
 
-  const handleOpenListView = useCallback(() => {
-    setOpen(true);
-  }, [open]);
+  const handleOpenListView = useCallback(
+    (e) => {
+      console.log(e.currentTarget.id);
+      setPopType(e.currentTarget.id);
+
+      setOpen(true);
+    },
+    [open, popType]
+  );
 
   return (
     <Container>
       <HeaderContainer>
-        <Button text={"명단 업로드"} onClick={(e) => handleOpenListUpload(e)} />
-        <Button text={"명단 조회"} onClick={(e) => handleOpenListView(e)} />
+        <Button
+          id="upload"
+          text={"명단 업로드"}
+          onClick={(e) => handleOpenListView(e)}
+        />
+        <Button
+          id="view"
+          text={"명단 조회"}
+          onClick={(e) => handleOpenListView(e)}
+        />
       </HeaderContainer>
 
       <ThumbNailContainer>
@@ -218,10 +241,10 @@ const Contents = (props) => {
 
       <PopUp
         open={open}
-        title={"직원 명단 업로드"}
+        title={popType === "view" ? "직원 명단 조회" : "직원 명단 업로드"}
         close={(e) => handleCloseListUpload(e)}
         ok={(e) => handleOkListUpload(e)}
-        contents={uploadContents()}
+        contents={popType === "view" ? dataListView() : uploadContents()}
       />
     </Container>
   );

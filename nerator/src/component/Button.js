@@ -10,6 +10,7 @@ const Button = (props) => {
       fontColor={props.fontColor}
       width={props.width}
       onClick={props.onClick}
+      id={props.id}
     >
       <Text>{props.text}</Text>
     </Container>
