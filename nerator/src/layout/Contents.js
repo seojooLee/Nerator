@@ -22,7 +22,20 @@ const Contents = (props) => {
     // } else {
     //   setFilesInfo({ [e.target.id]: e.target.files[0] });
     // }
-    setExcelData([...[]]);
+    console.log("handleUploadFile");
+    console.log(excelData);
+    console.log(excelData.length);
+    if (Object.keys(excelData).length > 0) {
+      if (
+        !window.confirm(
+          "이미 불러온 파일이 있습니다. \n 지우고 현재 파일을 불러오시겠습니까?"
+        )
+      ) {
+        setExcelData([]);
+        return false;
+      }
+    }
+
     setFilesInfo({
       ...filesInfo,
       [e.target.id]: e.target.files[0],
