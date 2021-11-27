@@ -5,8 +5,18 @@ const Footer = (props) => {
   return (
     <Container>
       <ButtonContainer>
-        <Button text="TEST PRINT" background="#32BA3F" fontColor="black" />
-        <Button text="PRINT" backgroundColor="#32BA3F" fontColor="black" />
+        <Button
+          text="TEST PRINT"
+          onClick={() => window.print()}
+          background="#32BA3F"
+          fontColor="black"
+        />
+        <Button
+          text="PRINT"
+          onClick={() => window.print()}
+          backgroundColor="#32BA3F"
+          fontColor="black"
+        />
       </ButtonContainer>
     </Container>
   );

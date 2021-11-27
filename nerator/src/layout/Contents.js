@@ -212,7 +212,9 @@ const Contents = (props) => {
           {filesInfo.hasOwnProperty("front") ? (
             <Image src={URL.createObjectURL(filesInfo["front"])} />
           ) : (
-            <React.Fragment />
+            <React.Fragment>
+              <SelectHeader>사진이 없습니다</SelectHeader>
+            </React.Fragment>
           )}
         </ThumbNail>
 
@@ -227,7 +229,9 @@ const Contents = (props) => {
           {filesInfo.hasOwnProperty("back") ? (
             <Image src={URL.createObjectURL(filesInfo["back"])} />
           ) : (
-            <React.Fragment />
+            <React.Fragment>
+              <SelectHeader>사진이 없습니다</SelectHeader>
+            </React.Fragment>
           )}
         </ThumbNail>
 
