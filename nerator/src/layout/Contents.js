@@ -5,14 +5,13 @@ import PopUp from "../component/Popup";
 import FileUpload from "../component/FileUpload";
 import * as XLSX from "xlsx";
 
-const Contents = ({ excelData = [], addList }) => {
+const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [filesInfo, setFilesInfo] = useState([]);
-  //const [excelData, setExcelData] = useState(new Object());
+  //const [filesInfo, setFilesInfo] = useState([]);
   const [popType, setPopType] = useState("");
-  console.log("Data");
-  console.log(excelData);
+  console.log("filesInfo");
+  console.log(filesInfo);
 
   const handleUploadFile = (e) => {
     // if (filesInfo.length > 0) {
@@ -34,12 +33,11 @@ const Contents = ({ excelData = [], addList }) => {
         )
       ) {
         addList([]);
-        //setExcelData([]);
         return false;
       }
     }
 
-    setFilesInfo({
+    addNameTag({
       ...filesInfo,
       [e.target.id]: e.target.files[0],
     });
@@ -106,11 +104,9 @@ const Contents = ({ excelData = [], addList }) => {
         console.log(_data);
         if (_data.length > 0) {
           alert("header와 데이터가 올바른 형태가 아닙니다.");
-          // setExcelData([]);
           addList([]);
           return false;
         } else {
-          // setExcelData({ ...excelData, result: result });
           addList({ ...excelData, result: result });
         }
       };
@@ -253,11 +249,7 @@ const Contents = ({ excelData = [], addList }) => {
 
         <SelctContents>
           {Object.keys(excelData).length > 0 &&
-            excelData[0].map((item, idx) => {
-              console.log("test");
-              console.log(item);
-              return <Items>{item}</Items>;
-            })}
+            excelData[0].map((item, idx) => <Items>{item}</Items>)}
         </SelctContents>
       </SelectContainer>
 

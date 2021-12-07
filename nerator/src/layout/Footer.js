@@ -1,7 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "../component/Button";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 const Footer = (props) => {
+  const { excelData, filesInfo } = useSelector((state) => ({
+    excelData: state.nameTag.excelData,
+    filesInfo: state.nameTag.filesInfo,
+  }));
+
+  const dispatch = useDispatch();
+
+  const testPrint = () => {
+    console.log("testPrint");
+    console.log(filesInfo);
+  };
+
   return (
     <Container>
       <ButtonContainer>
@@ -10,6 +24,7 @@ const Footer = (props) => {
           onClick={() => window.print()}
           background="#32BA3F"
           fontColor="black"
+          onClick={testPrint}
         />
         <Button
           text="PRINT"
