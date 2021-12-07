@@ -3,12 +3,13 @@ import styled from "styled-components";
 import Header from "./Header";
 import Footer from "./Footer";
 import Contents from "./Contents";
-
+import NeratorContainer from "../containers/NeratorContainer";
 const Layout = (props) => {
   return (
     <Container>
       <Header />
-      <Contents />
+      <NeratorContainer />
+      {/* <Contents /> */}
       <Footer />
     </Container>
   );
@@ -17,7 +18,7 @@ const Layout = (props) => {
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  flex-direction: column; 
+  flex-direction: column;
   flex-wrap: nowrap;
 `;
 

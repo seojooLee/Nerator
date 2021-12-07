@@ -4,15 +4,21 @@ import Contents from "../layout/Contents";
 import { addList } from "../module/nameTag";
 
 function NeratorContainer() {
-  const { data } = useSelector((state) => ({
-    data: state.data,
+  const { excelData } = useSelector((state) => ({
+    excelData: state.nameTag.excelData,
   }));
+  console.log("container");
+  console.log(excelData);
 
   const dispatch = useDispatch();
 
-  const onAddList = (data) => dispatch(addList(data));
+  //const onAddList = (excelData) => dispatch(addList(excelData.result));
+  const onAddList = (excelData) => {
+    console.log(excelData);
+    dispatch(addList(excelData.result));
+  };
 
-  return <Contents data={data} addList={onAddList} />;
+  return <Contents excelData={excelData} addList={onAddList} />;
 }
 
 export default NeratorContainer;

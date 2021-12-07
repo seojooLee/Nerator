@@ -5,12 +5,14 @@ import PopUp from "../component/Popup";
 import FileUpload from "../component/FileUpload";
 import * as XLSX from "xlsx";
 
-const Contents = (props) => {
+const Contents = ({ excelData = [], addList }) => {
   const [open, setOpen] = useState(false);
   const [fileName, setFileName] = useState("");
   const [filesInfo, setFilesInfo] = useState([]);
-  const [excelData, setExcelData] = useState(new Object());
+  //const [excelData, setExcelData] = useState(new Object());
   const [popType, setPopType] = useState("");
+  console.log("Data");
+  console.log(excelData);
 
   const handleUploadFile = (e) => {
     // if (filesInfo.length > 0) {
@@ -31,7 +33,8 @@ const Contents = (props) => {
           "이미 불러온 파일이 있습니다. \n 지우고 현재 파일을 불러오시겠습니까?"
         )
       ) {
-        setExcelData([]);
+        addList([]);
+        //setExcelData([]);
         return false;
       }
     }
@@ -103,10 +106,12 @@ const Contents = (props) => {
         console.log(_data);
         if (_data.length > 0) {
           alert("header와 데이터가 올바른 형태가 아닙니다.");
-          setExcelData([]);
+          // setExcelData([]);
+          addList([]);
           return false;
         } else {
-          setExcelData({ ...excelData, result: result });
+          // setExcelData({ ...excelData, result: result });
+          addList({ ...excelData, result: result });
         }
       };
       reader.readAsBinaryString(files);
@@ -118,7 +123,7 @@ const Contents = (props) => {
       <>
         <TABLE>
           {Object.keys(excelData).length > 0 ? (
-            excelData["result"].map((item, idx) => {
+            excelData.map((item, idx) => {
               return (
                 <TR>
                   {item.map((it, ins) => {
@@ -156,7 +161,7 @@ const Contents = (props) => {
 
         <TABLE>
           {Object.keys(excelData).length > 0 &&
-            excelData["result"].map((item, idx) => {
+            excelData.map((item, idx) => {
               return (
                 <TR>
                   {item.map((it, ins) => {
@@ -248,7 +253,7 @@ const Contents = (props) => {
 
         <SelctContents>
           {Object.keys(excelData).length > 0 &&
-            excelData["result"][0].map((item, idx) => {
+            excelData[0].map((item, idx) => {
               console.log("test");
               console.log(item);
               return <Items>{item}</Items>;

@@ -9,9 +9,14 @@ const initialStae = [];
 
 //리듀서
 export default function nameTag(state = initialStae, action) {
+  console.log("reducer");
+  console.log(action);
+  console.log(action.type);
   switch (action.type) {
     case ADD_LIST:
-      return (state = action.data);
+      return {
+        excelData: action.data,
+      };
     default:
       return state;
   }
