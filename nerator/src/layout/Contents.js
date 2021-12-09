@@ -7,11 +7,9 @@ import * as XLSX from "xlsx";
 
 const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
   const [open, setOpen] = useState(false);
+  const [currentItem, setCurrentItem] = useState("");
   const [fileName, setFileName] = useState("");
-  //const [filesInfo, setFilesInfo] = useState([]);
   const [popType, setPopType] = useState("");
-  console.log("filesInfo");
-  console.log(filesInfo);
 
   const handleUploadFile = (e) => {
     // if (filesInfo.length > 0) {
@@ -193,6 +191,34 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
     [open, popType]
   );
 
+  const onDragEnter = (e) => {
+    setCurrentItem(e.target.getAttribute("data-item"));
+  };
+
+  const onDrag = (event) => {
+    //console.log("onDrag");
+  };
+  const onDragExit = (e) => {
+    if (currentItem.length > 0) {
+      setCurrentItem("");
+    }
+  };
+
+  const onMouseOver = (e) => {
+    // console.log(e.target.classList);
+    console.log(currentItem);
+    if (currentItem.length > 0) {
+      console.log("박스를 가지고 mouseOver");
+    }
+    console.log("박스 mouseOver");
+  };
+
+  const onDragEndContainer = (e) => {
+    // if (currentItem.length > 0) {
+    //   setCurrentItem("");
+    // }
+  };
+
   return (
     <Container>
       <HeaderContainer>
@@ -209,7 +235,7 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
       </HeaderContainer>
 
       <ThumbNailContainer>
-        <ThumbNail>
+        <ThumbNail onMouseOver={onMouseOver} onDragEnd={onDragEndContainer}>
           {filesInfo.hasOwnProperty("front") ? (
             <Image src={URL.createObjectURL(filesInfo["front"])} />
           ) : (
@@ -226,7 +252,7 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
           handleFile={(e) => handleUploadFile(e)}
         />
 
-        <ThumbNail>
+        <ThumbNail className={"droppable"}>
           {filesInfo.hasOwnProperty("back") ? (
             <Image src={URL.createObjectURL(filesInfo["back"])} />
           ) : (
@@ -249,7 +275,19 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
 
         <SelctContents>
           {Object.keys(excelData).length > 0 &&
-            excelData[0].map((item, idx) => <Items>{item}</Items>)}
+            excelData[0].map((item, idx) => (
+              <Items
+                key={item + "-" + idx}
+                data-item={idx}
+                className={"droppable"}
+                draggable={true}
+                onDragStart={onDragEnter}
+                onDrag={onDrag}
+                onDragEnd={onDragExit}
+              >
+                {item}
+              </Items>
+            ))}
         </SelctContents>
       </SelectContainer>
 
@@ -320,8 +358,18 @@ const Items = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: pink;
+  background-color: #1a8cff;
   margin-left: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    background-color: #0074e8;
+    color: white;
+  }
+  &:active {
+    background-color: #0683ff;
+  }
 `;
 
 const SelectHeader = styled.div`
