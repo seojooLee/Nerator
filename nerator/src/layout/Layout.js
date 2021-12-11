@@ -11,7 +11,7 @@ const Layout = (props) => {
       <NeratorContainer />
       {/* <Contents /> */}
       <Footer />
-    </Container>
+    </Container> 
   );
 };
 

@@ -5,7 +5,14 @@ import PopUp from "../component/Popup";
 import FileUpload from "../component/FileUpload";
 import * as XLSX from "xlsx";
 
-const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
+const Contents = ({
+  excelData = [],
+  addList,
+  filesInfo = [],
+  addNameTag,
+  setLocation,
+  locList,
+}) => {
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState("");
   const [fileName, setFileName] = useState("");
@@ -21,9 +28,6 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
     // } else {
     //   setFilesInfo({ [e.target.id]: e.target.files[0] });
     // }
-    console.log("handleUploadFile");
-    console.log(excelData);
-    console.log(excelData.length);
     if (Object.keys(excelData).length > 0) {
       if (
         !window.confirm(
@@ -199,18 +203,20 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
     //console.log("onDrag");
   };
   const onDragExit = (e) => {
+    console.log("onDragEXIT");
     if (currentItem.length > 0) {
-      setCurrentItem("");
+      // setCurrentItem("");
     }
   };
 
   const onMouseOver = (e) => {
     // console.log(e.target.classList);
-    console.log(currentItem);
+    console.log("onMouseOver");
     if (currentItem.length > 0) {
+      setLocation({ id: currentItem, x: 134, y: 3432 });
       console.log("박스를 가지고 mouseOver");
+      setCurrentItem("");
     }
-    console.log("박스 mouseOver");
   };
 
   const onDragEndContainer = (e) => {
@@ -252,7 +258,11 @@ const Contents = ({ excelData = [], addList, filesInfo = [], addNameTag }) => {
           handleFile={(e) => handleUploadFile(e)}
         />
 
-        <ThumbNail className={"droppable"}>
+        <ThumbNail
+          onMouseOver={onMouseOver}
+          onDragEnd={onDragEndContainer}
+          className={"droppable"}
+        >
           {filesInfo.hasOwnProperty("back") ? (
             <Image src={URL.createObjectURL(filesInfo["back"])} />
           ) : (
