@@ -17,6 +17,7 @@ const Contents = ({
   const [currentItem, setCurrentItem] = useState("");
   const [fileName, setFileName] = useState("");
   const [popType, setPopType] = useState("");
+  const el = useRef(null);
 
   const handleUploadFile = (e) => {
     // if (filesInfo.length > 0) {
@@ -181,7 +182,6 @@ const Contents = ({
   );
 
   const handleOkListUpload = useCallback(() => {
-    console.log("확인 함수 실행");
     setOpen(false);
   }, [open]);
 
@@ -196,33 +196,37 @@ const Contents = ({
   );
 
   const onDragEnter = (e) => {
+    console.log("dragStart");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.setData("id", e.target.getAttribute("data-item"));
+    e.dataTransfer.setDragImage(e.target, 20, 20);
+    e.target.classList.add("drag");
+
     setCurrentItem(e.target.getAttribute("data-item"));
   };
 
-  const onDrag = (event) => {
-    //console.log("onDrag");
-  };
-  const onDragExit = (e) => {
-    console.log("onDragEXIT");
-    if (currentItem.length > 0) {
-      // setCurrentItem("");
-    }
-  };
+  const [isDragOver, setIsDragOver] = useState(false);
 
-  const onMouseOver = (e) => {
-    // console.log(e.target.classList);
-    console.log("onMouseOver");
+  const onDragOver = (e) => {
+    // console.log(e.target.classList);'
+    e.preventDefault();
+    setIsDragOver(true);
+
     if (currentItem.length > 0) {
-      setLocation({ id: currentItem, x: 134, y: 3432 });
-      console.log("박스를 가지고 mouseOver");
+      let move = e.target.getBoundingClientRect();
+      let client_x = e.clientX - move.left;
+      let client_y = e.clientY - move.top;
+      setLocation({ id: currentItem, x: client_x, y: client_y });
+
       setCurrentItem("");
     }
   };
 
-  const onDragEndContainer = (e) => {
-    // if (currentItem.length > 0) {
-    //   setCurrentItem("");
-    // }
+  const onDrop = (e) => {
+    let id = e.dataTransfer.getData("id");
+    setIsDragOver(false);
+    console.log("onDrop : id -- " + id);
   };
 
   return (
@@ -241,7 +245,11 @@ const Contents = ({
       </HeaderContainer>
 
       <ThumbNailContainer>
-        <ThumbNail onMouseOver={onMouseOver} onDragEnd={onDragEndContainer}>
+        <ThumbNail
+          isDragOver={isDragOver}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+        >
           {filesInfo.hasOwnProperty("front") ? (
             <Image src={URL.createObjectURL(filesInfo["front"])} />
           ) : (
@@ -259,9 +267,10 @@ const Contents = ({
         />
 
         <ThumbNail
-          onMouseOver={onMouseOver}
-          onDragEnd={onDragEndContainer}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
           className={"droppable"}
+          isDragOver={isDragOver}
         >
           {filesInfo.hasOwnProperty("back") ? (
             <Image src={URL.createObjectURL(filesInfo["back"])} />
@@ -287,13 +296,14 @@ const Contents = ({
           {Object.keys(excelData).length > 0 &&
             excelData[0].map((item, idx) => (
               <Items
+                ref={el}
                 key={item + "-" + idx}
                 data-item={idx}
                 className={"droppable"}
                 draggable={true}
+                isDragging
                 onDragStart={onDragEnter}
-                onDrag={onDrag}
-                onDragEnd={onDragExit}
+                onDragEnd={(e) => setIsDragOver(false)}
               >
                 {item}
               </Items>
@@ -345,7 +355,8 @@ const ThumbNail = styled.div`
   margin-top: 4rem;
   height: 17rem;
   border: 1px solid black;
-  background-color: #e8e8e8;
+  background-color: ${(props) => (props.isDragOver ? " #d6d4d4" : " #e8e8e8")};
+  border: ${(props) => (props.isDragOver ? " 4px dashed black" : " none")};
 `;
 
 const Image = styled.img`
@@ -371,14 +382,18 @@ const Items = styled.div`
   background-color: #1a8cff;
   margin-left: 10px;
   border-radius: 3px;
-  cursor: pointer;
   user-select: none;
+  cursor: ${(props) => (props.isDragging ? "grabbing" : "cursor")};
+
   &:hover {
     background-color: #0074e8;
     color: white;
   }
   &:active {
     background-color: #0683ff;
+    cursor: grabbing;
+    cursor: --moz-grabbing;
+    cursor: -webkit-grabbing;
   }
 `;
 
