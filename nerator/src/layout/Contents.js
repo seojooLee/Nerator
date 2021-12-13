@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import Button from "../component/Button";
 import PopUp from "../component/Popup";
@@ -18,6 +24,7 @@ const Contents = ({
   const [fileName, setFileName] = useState("");
   const [popType, setPopType] = useState("");
   const el = useRef(null);
+  const [page2, setPage2] = useState([]);
 
   const handleUploadFile = (e) => {
     // if (filesInfo.length > 0) {
@@ -29,6 +36,7 @@ const Contents = ({
     // } else {
     //   setFilesInfo({ [e.target.id]: e.target.files[0] });
     // }
+    console.log(excelData);
     if (Object.keys(excelData).length > 0) {
       if (
         !window.confirm(
@@ -196,41 +204,69 @@ const Contents = ({
   );
 
   const onDragEnter = (e) => {
-    console.log("dragStart");
+    console.log(e.target);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("id", e.target.getAttribute("data-item"));
+    e.dataTransfer.setData("text/html", e.target);
     e.dataTransfer.setDragImage(e.target, 20, 20);
     e.target.classList.add("drag");
 
-    setCurrentItem(e.target.getAttribute("data-item"));
+    setCurrentItem(e.target);
   };
 
-  const [isDragOver, setIsDragOver] = useState(false);
+  const [isDragOver1, setIsDragOver1] = useState(false);
+  const [isDragOver2, setIsDragOver2] = useState(false);
 
+  const [item1, setItem1] = useState([]);
+  const [item2, setItem2] = useState([]);
+
+  let clone = [];
   const onDragOver = (e) => {
     // console.log(e.target.classList);'
     e.preventDefault();
-    setIsDragOver(true);
+    if (e.target.getAttribute("data-key") === "1") {
+      setIsDragOver1(true);
+    } else {
+      setIsDragOver2(true);
+    }
+  };
 
-    if (currentItem.length > 0) {
+  const onDrop = (e) => {
+    console.log("=================");
+    console.log(currentItem.length);
+    let obj = [];
+    if (currentItem) {
       let move = e.target.getBoundingClientRect();
       let client_x = e.clientX - move.left;
       let client_y = e.clientY - move.top;
       setLocation({ id: currentItem, x: client_x, y: client_y });
 
-      setCurrentItem("");
-    }
-  };
+      const elementAssign = Object.assign({}, currentItem);
+      const reactHandlerKey = Object.keys(elementAssign).filter(
+        (item) => item.indexOf("__reactProps") >= 0
+      );
+      const reactHandler = elementAssign[reactHandlerKey[0]];
 
-  const onDrop = (e) => {
-    let id = e.dataTransfer.getData("id");
-    setIsDragOver(false);
-    console.log("onDrop : id -- " + id);
+      obj = {
+        id: el.current,
+        props: reactHandler,
+      };
+      //  setCurrentItem("");
+    }
+
+    if (e.target.getAttribute("data-key") === "1") {
+      setIsDragOver1(false);
+      setItem1(item1.concat(obj));
+    } else {
+      setIsDragOver2(false);
+      setItem2(item2.concat(obj));
+    }
   };
 
   return (
     <Container>
+      {clone}
       <HeaderContainer>
         <Button
           id="upload"
@@ -246,10 +282,18 @@ const Contents = ({
 
       <ThumbNailContainer>
         <ThumbNail
-          isDragOver={isDragOver}
+          isDragOver={isDragOver1}
           onDrop={onDrop}
+          data-key="1"
           onDragOver={onDragOver}
         >
+          {item1 &&
+            item1.map((itm, idx) => {
+              let prop = itm.props;
+
+              return <Items {...prop} />;
+            })}
+
           {filesInfo.hasOwnProperty("front") ? (
             <Image src={URL.createObjectURL(filesInfo["front"])} />
           ) : (
@@ -268,10 +312,17 @@ const Contents = ({
 
         <ThumbNail
           onDrop={onDrop}
+          data-key="2"
           onDragOver={onDragOver}
           className={"droppable"}
-          isDragOver={isDragOver}
+          isDragOver={isDragOver2}
         >
+          {item2 &&
+            item2.map((itm, idx) => {
+              let prop = itm.props;
+
+              return <Items {...prop} />;
+            })}
           {filesInfo.hasOwnProperty("back") ? (
             <Image src={URL.createObjectURL(filesInfo["back"])} />
           ) : (
@@ -291,7 +342,6 @@ const Contents = ({
 
       <SelectContainer>
         <SelectHeader>변수 지정</SelectHeader>
-
         <SelctContents>
           {Object.keys(excelData).length > 0 &&
             excelData[0].map((item, idx) => (
@@ -303,7 +353,7 @@ const Contents = ({
                 draggable={true}
                 isDragging
                 onDragStart={onDragEnter}
-                onDragEnd={(e) => setIsDragOver(false)}
+                onDragEnd={(e) => setIsDragOver1(false)}
               >
                 {item}
               </Items>
