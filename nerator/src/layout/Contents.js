@@ -234,6 +234,7 @@ const Contents = ({
 
   const onDrop = (e) => {
     console.log("=================");
+
     console.log(currentItem.length);
     let obj = [];
     if (currentItem) {
@@ -256,10 +257,18 @@ const Contents = ({
     }
 
     if (e.target.getAttribute("data-key") === "1") {
-      setIsDragOver1(false);
+      if (!filesInfo.hasOwnProperty("front")) {
+        alert("이미지가 존재하지 않습니다.");
+      } else {
+        setIsDragOver1(false);
+      }
       setItem1(item1.concat(obj));
     } else {
-      setIsDragOver2(false);
+      if (!filesInfo.hasOwnProperty("back")) {
+        alert("이미지가 존재하지 않습니다.");
+      } else {
+        setIsDragOver2(false);
+      }
       setItem2(item2.concat(obj));
     }
   };
