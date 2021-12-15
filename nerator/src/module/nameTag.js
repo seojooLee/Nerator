@@ -13,7 +13,7 @@ export default function nameTag(state = initialStae, action) {
   console.log("reducer");
   console.log(action);
   console.log(action.type);
-
+  let param = action.data;
   console.log(state);
   switch (action.type) {
     case ADD_LIST:
@@ -22,7 +22,8 @@ export default function nameTag(state = initialStae, action) {
       };
     case ADD_NAMETAG:
       return {
-        filesInfo: action.data,
+        ...state,
+        filesInfo: state.concat(action.data),
       };
 
     default:

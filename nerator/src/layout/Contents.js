@@ -27,15 +27,6 @@ const Contents = ({
   const [page2, setPage2] = useState([]);
 
   const handleUploadFile = (e) => {
-    // if (filesInfo.length > 0) {
-    //   filesInfo.map((data, idx) =>
-    //     data.id === e.target.id
-    //       ? { ...filesInfo, [e.target.id]: e.target.files[0] }
-    //       : { ...filesInfo, [e.target.id]: e.target.files[0] }
-    //   );
-    // } else {
-    //   setFilesInfo({ [e.target.id]: e.target.files[0] });
-    // }
     console.log(excelData);
     if (Object.keys(excelData).length > 0) {
       if (
@@ -47,14 +38,17 @@ const Contents = ({
         return false;
       }
     }
-
     addNameTag({
       ...filesInfo,
       [e.target.id]: e.target.files[0],
     });
+  };
 
-    //    if (e.target.files[0]["name"].length <= 0) return false;
-    //  setFileName(e.target.files[0].name);
+  const handleUploadNameTag = (e) => {
+    addNameTag({
+      ...filesInfo,
+      [e.target.id]: e.target.files[0],
+    });
   };
 
   const handleParsingFile = (e) => {
@@ -65,64 +59,64 @@ const Contents = ({
     //   return false;
     // }
     let result = new Array();
-    if (filesInfo.hasOwnProperty("list")) {
-      const reader = new FileReader();
-      const files = filesInfo["list"];
-      reader.onload = (e) => {
-        let data = e.target.result;
-        const wb = XLSX.read(data, { type: "binary" });
-        const wsName = wb.SheetNames[0];
+    // if (filesInfo.hasOwnProperty("list")) {
+    const reader = new FileReader();
+    const files = filesInfo["list"];
+    reader.onload = (e) => {
+      let data = e.target.result;
+      const wb = XLSX.read(data, { type: "binary" });
+      const wsName = wb.SheetNames[0];
 
-        let worksheet = wb.Sheets[wsName];
-        // let headerSheet = wb.Sheets[wsName];
-        // headerSheet["!ref"] = "A1:C1";
-        // const data_1 = XLSX.utils.sheet_to_json(headerSheet, { header: 1 });
-        // console.log(data_1);
+      let worksheet = wb.Sheets[wsName];
+      // let headerSheet = wb.Sheets[wsName];
+      // headerSheet["!ref"] = "A1:C1";
+      // const data_1 = XLSX.utils.sheet_to_json(headerSheet, { header: 1 });
+      // console.log(data_1);
 
-        // if (data_1[0].length <= 0) {
-        //   alert("올바른 형태가 아닙니다.");
-        //   return false;
-        // }
+      // if (data_1[0].length <= 0) {
+      //   alert("올바른 형태가 아닙니다.");
+      //   return false;
+      // }
 
-        //  console.dir(data_1, { depths: null, colors: true });
+      //  console.dir(data_1, { depths: null, colors: true });
 
-        let row;
-        let rowNum;
-        let colNum;
-        let range = XLSX.utils.decode_range(worksheet["!ref"]);
+      let row;
+      let rowNum;
+      let colNum;
+      let range = XLSX.utils.decode_range(worksheet["!ref"]);
 
-        if (range.s.r !== 0) {
-          alert("올바른 형태가 아닙니다.");
-          return false;
-        }
+      if (range.s.r !== 0) {
+        alert("올바른 형태가 아닙니다.");
+        return false;
+      }
 
-        for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
-          row = [];
-          for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
-            var nextCell =
-              worksheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
-            console.log(rowNum);
-            if (rowNum === 0) {
-              console.log(nextCell);
-            }
-            if (typeof nextCell === "undefined") {
-              row.push(void 0);
-            } else row.push(nextCell.w);
+      for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
+        row = [];
+        for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
+          var nextCell =
+            worksheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
+          console.log(rowNum);
+          if (rowNum === 0) {
+            console.log(nextCell);
           }
-          result.push(row);
+          if (typeof nextCell === "undefined") {
+            row.push(void 0);
+          } else row.push(nextCell.w);
         }
-        let _data = result[0].filter((e) => e === undefined);
-        console.log(_data);
-        if (_data.length > 0) {
-          alert("header와 데이터가 올바른 형태가 아닙니다.");
-          addList([]);
-          return false;
-        } else {
-          addList({ ...excelData, result: result });
-        }
-      };
-      reader.readAsBinaryString(files);
-    }
+        result.push(row);
+      }
+      let _data = result[0].filter((e) => e === undefined);
+      console.log(_data);
+      if (_data.length > 0) {
+        alert("header와 데이터가 올바른 형태가 아닙니다.");
+        addList([]);
+        return false;
+      } else {
+        addList({ ...excelData, result: result });
+      }
+    };
+    reader.readAsBinaryString(files);
+    //   }
   };
 
   const dataListView = useCallback(() => {
@@ -259,6 +253,7 @@ const Contents = ({
     if (e.target.getAttribute("data-key") === "1") {
       if (!filesInfo.hasOwnProperty("front")) {
         alert("이미지가 존재하지 않습니다.");
+        return false;
       } else {
         setIsDragOver1(false);
       }
@@ -266,6 +261,7 @@ const Contents = ({
     } else {
       if (!filesInfo.hasOwnProperty("back")) {
         alert("이미지가 존재하지 않습니다.");
+        return false;
       } else {
         setIsDragOver2(false);
       }
@@ -316,7 +312,7 @@ const Contents = ({
           text={"앞면 업로드"}
           extension={".png,.jpeg,.jpg"}
           id={"front"}
-          handleFile={(e) => handleUploadFile(e)}
+          handleFile={(e) => handleUploadNameTag(e)}
         />
 
         <ThumbNail
@@ -345,7 +341,7 @@ const Contents = ({
           text={"뒷면 업로드"}
           extension={".png,.jpeg,.jpg"}
           id={"back"}
-          handleFile={(e) => handleUploadFile(e)}
+          handleFile={(e) => handleUploadNameTag(e)}
         />
       </ThumbNailContainer>
 

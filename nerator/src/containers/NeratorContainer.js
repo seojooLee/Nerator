@@ -5,10 +5,12 @@ import { addList, addNameTag } from "../module/nameTag";
 import { updateLocation } from "../module/location";
 
 function NeratorContainer() {
-  const { excelData, filesInfo } = useSelector((state) => ({
-    excelData: state.nameTag.excelData,
-    filesInfo: state.nameTag.filesInfo,
-  }));
+  // const { excelData, filesInfo } = useSelector((state) => ({
+  //   excelData: state.nameTag.excelData,
+  //   filesInfo: state.nameTag.filesInfo.param,
+  // }));
+
+  const test = useSelector((state) => console.log(state.nameTag.filesInfo));
 
   const { locData } = useSelector((state) => ({
     locData: state.location.locData,
@@ -22,8 +24,8 @@ function NeratorContainer() {
 
   return (
     <Contents
-      excelData={excelData}
-      filesInfo={filesInfo}
+      //  excelData={excelData}
+      // filesInfo={filesInfo}
       addNameTag={onAddNameTag}
       addList={onAddList}
       setLocation={setLocation}
