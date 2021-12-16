@@ -286,63 +286,65 @@ const Contents = ({
       </HeaderContainer>
 
       <ThumbNailContainer>
-        <ThumbNail
-          isDragOver={isDragOver1}
-          onDrop={onDrop}
-          data-key="1"
-          onDragOver={onDragOver}
-        >
-          {item1 &&
-            item1.map((itm, idx) => {
-              let prop = itm.props;
+        <WrapItem>
+          <ThumbNail
+            isDragOver={isDragOver1}
+            onDrop={onDrop}
+            data-key="1"
+            onDragOver={onDragOver}
+          >
+            {item1 &&
+              item1.map((itm, idx) => {
+                let prop = itm.props;
 
-              return <Items {...prop} />;
-            })}
+                return <Items {...prop} />;
+              })}
 
-          {filesInfo.hasOwnProperty("front") ? (
-            <Image src={URL.createObjectURL(filesInfo["front"])} />
-          ) : (
-            <React.Fragment>
-              <SelectHeader>사진이 없습니다</SelectHeader>
-            </React.Fragment>
-          )}
-        </ThumbNail>
+            {filesInfo.hasOwnProperty("front") ? (
+              <Image src={URL.createObjectURL(filesInfo["front"])} />
+            ) : (
+              <React.Fragment>
+                <SelectHeader>사진이 없습니다</SelectHeader>
+              </React.Fragment>
+            )}
+          </ThumbNail>
+          <FileUpload
+            text={"앞면 업로드"}
+            extension={".png,.jpeg,.jpg"}
+            id={"front"}
+            handleFile={(e) => handleUploadNameTag(e)}
+          />
+        </WrapItem>
+        <WrapItem>
+          <ThumbNail
+            onDrop={onDrop}
+            data-key="2"
+            onDragOver={onDragOver}
+            className={"droppable"}
+            isDragOver={isDragOver2}
+          >
+            {item2 &&
+              item2.map((itm, idx) => {
+                let prop = itm.props;
 
-        <FileUpload
-          text={"앞면 업로드"}
-          extension={".png,.jpeg,.jpg"}
-          id={"front"}
-          handleFile={(e) => handleUploadNameTag(e)}
-        />
+                return <Items {...prop} />;
+              })}
+            {filesInfo.hasOwnProperty("back") ? (
+              <Image src={URL.createObjectURL(filesInfo["back"])} />
+            ) : (
+              <React.Fragment>
+                <SelectHeader>사진이 없습니다</SelectHeader>
+              </React.Fragment>
+            )}
+          </ThumbNail>
 
-        <ThumbNail
-          onDrop={onDrop}
-          data-key="2"
-          onDragOver={onDragOver}
-          className={"droppable"}
-          isDragOver={isDragOver2}
-        >
-          {item2 &&
-            item2.map((itm, idx) => {
-              let prop = itm.props;
-
-              return <Items {...prop} />;
-            })}
-          {filesInfo.hasOwnProperty("back") ? (
-            <Image src={URL.createObjectURL(filesInfo["back"])} />
-          ) : (
-            <React.Fragment>
-              <SelectHeader>사진이 없습니다</SelectHeader>
-            </React.Fragment>
-          )}
-        </ThumbNail>
-
-        <FileUpload
-          text={"뒷면 업로드"}
-          extension={".png,.jpeg,.jpg"}
-          id={"back"}
-          handleFile={(e) => handleUploadNameTag(e)}
-        />
+          <FileUpload
+            text={"뒷면 업로드"}
+            extension={".png,.jpeg,.jpg"}
+            id={"back"}
+            handleFile={(e) => handleUploadNameTag(e)}
+          />
+        </WrapItem>
       </ThumbNailContainer>
 
       <SelectContainer>
@@ -404,10 +406,17 @@ const ThumbNailContainer = styled.div`
   justify-content: space-around;
   flex-wrap: wrap;
 `;
+const WrapItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const ThumbNail = styled.div`
   width: 41.23rem;
   margin-top: 4rem;
+  margin-bottom: 1.5rem;
   height: 17rem;
   border: 1px solid black;
   background-color: ${(props) => (props.isDragOver ? " #d6d4d4" : " #e8e8e8")};

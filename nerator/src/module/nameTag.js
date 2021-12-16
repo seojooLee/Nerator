@@ -23,7 +23,7 @@ export default function nameTag(state = initialStae, action) {
     case ADD_NAMETAG:
       return {
         ...state,
-        filesInfo: state.concat(action.data),
+        filesInfo: action.data,
       };
 
     default:
