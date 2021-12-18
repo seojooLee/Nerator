@@ -393,7 +393,6 @@ const Container = styled.div`
 const HeaderContainer = styled.div`
   width: 100%;
   display: flex;
-  border: 1px solid black;
   justify-content: flex-end;
   align-items: center;
   padding: 1.1rem;
@@ -462,16 +461,21 @@ const Items = styled.div`
 `;
 
 const SelectHeader = styled.div`
-  height: 29px;
+  //height: 29px;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  text-align: center;
   color: #288ec8;
-  background-color: #ffee53;
   border-radius: 11px 11px 0px 0px;
-  display: "flex";
-  align-items: center;
-  justify-content: flex-start;
   user-select: none;
   font-weight: 900;
-  padding-left: 12px;
+  font-size: large;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SelctContents = styled.div`
