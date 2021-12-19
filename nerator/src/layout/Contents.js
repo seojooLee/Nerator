@@ -119,6 +119,12 @@ const Contents = ({
     //   }
   };
 
+  const resetData = () => {
+    if (window.confirm("데이터를 비우시겠습니까?")) {
+      addList([]);
+    }
+  };
+
   const dataListView = useCallback(() => {
     return (
       <>
@@ -134,7 +140,10 @@ const Contents = ({
               );
             })
           ) : (
-            <SelectHeader>데이터가 없습니다.</SelectHeader>
+            <>
+              <SelectHeader>데이터가 없습니다.</SelectHeader>
+              <Button text={"비우기"} onClick={resetData} />
+            </>
           )}
         </TABLE>
       </>
@@ -489,14 +498,10 @@ const SelctContents = styled.div`
 const TABLE = styled.table`
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid black;
 `;
 
-const TR = styled.tr`
-  border: 1px solid black;
-`;
+const TR = styled.tr``;
 const TD = styled.td`
-  border: 1px solid black;
   text-align: center;
   width: 30px;
 `;

@@ -11,6 +11,7 @@ const Button = (props) => {
       width={props.width}
       onClick={props.onClick}
       id={props.id}
+      align={props.align}
     >
       <Text>{props.text}</Text>
     </Container>
@@ -24,6 +25,7 @@ Button.defaultProps = {
   backgroundColor: "rgba(52,168,234,1)",
   fontColor: "white",
   width: "8rem",
+  align: "right",
 };
 
 const Container = styled.div`

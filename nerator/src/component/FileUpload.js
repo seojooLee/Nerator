@@ -19,6 +19,7 @@ const FileUpload = (props) => {
         id={props.id}
         accept={props.extension}
         ref={fileInputInfo}
+        style={{ width: "300px" }}
         style={{ display: "none" }}
         onChange={(e) => handleChangeUpload(e)}
       />
