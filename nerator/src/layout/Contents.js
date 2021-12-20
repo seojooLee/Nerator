@@ -38,17 +38,23 @@ const Contents = ({
         return false;
       }
     }
-    addNameTag({
-      ...filesInfo,
-      [e.target.id]: e.target.files[0],
-    });
+    addNameTag(
+      {
+        ...filesInfo,
+        [e.target.id]: e.target.files[0],
+      },
+      e.target.id
+    );
   };
 
   const handleUploadNameTag = (e) => {
-    addNameTag({
-      ...filesInfo,
-      [e.target.id]: e.target.files[0],
-    });
+    addNameTag(
+      {
+        ...filesInfo,
+        [e.target.id]: e.target.files[0],
+      },
+      e.target.id
+    );
   };
 
   const handleParsingFile = (e) => {
@@ -309,7 +315,8 @@ const Contents = ({
                 return <Items {...prop} />;
               })}
 
-            {filesInfo.hasOwnProperty("front") ? (
+            {Object(filesInfo["front"]).hasOwnProperty() &&
+            Object.keys(filesInfo["front"]).length > 0 ? (
               <Image src={URL.createObjectURL(filesInfo["front"])} />
             ) : (
               <React.Fragment>
@@ -338,7 +345,9 @@ const Contents = ({
 
                 return <Items {...prop} />;
               })}
-            {filesInfo.hasOwnProperty("back") ? (
+
+            {Object(filesInfo["back"]).hasOwnProperty() &&
+            Object.keys(filesInfo["back"]).length > 0 ? (
               <Image src={URL.createObjectURL(filesInfo["back"])} />
             ) : (
               <React.Fragment>

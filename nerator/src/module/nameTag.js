@@ -4,15 +4,18 @@ const ADD_NAMETAG = "contents/ADD_NAMETAG";
 
 //액션 생성 함수
 export const addList = (data) => ({ type: ADD_LIST, data });
-export const addNameTag = (data) => ({ type: ADD_NAMETAG, data });
+export const addNameTag = (data, id) => ({ type: ADD_NAMETAG, data, id });
 //초기상태
-const initialStae = [];
+const initialState = {
+  files: {
+    list: {},
+    back: {},
+    front: {},
+  },
+};
 
 //리듀서
-export default function nameTag(state = initialStae, action) {
-  console.log("reducer");
-  console.log(action);
-  console.log(action.type);
+export default function nameTag(state = initialState, action) {
   let param = action.data;
   console.log(state);
   switch (action.type) {
@@ -21,9 +24,14 @@ export default function nameTag(state = initialStae, action) {
         excelData: action.data,
       };
     case ADD_NAMETAG:
+      console.log(state);
       return {
         ...state,
-        filesInfo: action.data,
+        // filesInfo: state.filesInfo.map((item, idx) =>
+        //   item === action.id ? { ...item, text: action.data } : item
+        // ),
+        //   files: (state.files[action.id] = action.data),
+        files: { ...state, [action.id]: action.data },
       };
 
     default:
