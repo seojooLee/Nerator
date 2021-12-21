@@ -6,33 +6,26 @@ const ADD_NAMETAG = "contents/ADD_NAMETAG";
 export const addList = (data) => ({ type: ADD_LIST, data });
 export const addNameTag = (data, id) => ({ type: ADD_NAMETAG, data, id });
 //초기상태
-const initialState = {
-  files: {
-    list: {},
-    back: {},
-    front: {},
-  },
-};
-
+const initialState = [];
 //리듀서
 export default function nameTag(state = initialState, action) {
-  let param = action.data;
-  console.log(state);
+  var id = action.id;
   switch (action.type) {
     case ADD_LIST:
       return {
         excelData: action.data,
       };
     case ADD_NAMETAG:
+      // console.log(
+      //   state.findIndex((e) =>
+      //     console.log("findIndex : " + e.id + "action.id : " + action.id)
+      //   )
+      // );
+      console.log("=========");
       console.log(state);
-      return {
-        ...state,
-        // filesInfo: state.filesInfo.map((item, idx) =>
-        //   item === action.id ? { ...item, text: action.data } : item
-        // ),
-        //   files: (state.files[action.id] = action.data),
-        files: { ...state, [action.id]: action.data },
-      };
+      return state.findIndex((e) => e.id === action.id) >= 0
+        ? { ...state, [action.id]: action.data }
+        : state.concat({ [action.id]: action.data, id: action.id });
 
     default:
       return state;
