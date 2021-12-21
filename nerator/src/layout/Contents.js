@@ -11,20 +11,17 @@ import PopUp from "../component/Popup";
 import FileUpload from "../component/FileUpload";
 import * as XLSX from "xlsx";
 
-const Contents = ({
-  excelData = [],
-  addList,
-  filesInfo = [],
-  addNameTag,
-  setLocation,
-  locList,
-}) => {
+const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState("");
-  const [fileName, setFileName] = useState("");
   const [popType, setPopType] = useState("");
   const el = useRef(null);
-  const [page2, setPage2] = useState([]);
+  const [excelData, setExcelData] = useState([]);
+
+  useEffect(() => {
+    console.log("useEffect");
+    console.log(excelData.result);
+  }, [excelData]);
 
   const handleUploadFile = (e) => {
     console.log(excelData);
@@ -34,7 +31,7 @@ const Contents = ({
           "이미 불러온 파일이 있습니다. \n 지우고 현재 파일을 불러오시겠습니까?"
         )
       ) {
-        addList([]);
+        setExcelData([]);
         return false;
       }
     }
@@ -64,70 +61,73 @@ const Contents = ({
     //   alert("지정된 확장자가 아닙니다.");
     //   return false;
     // }
-    let result = new Array();
-    // if (filesInfo.hasOwnProperty("list")) {
-    const reader = new FileReader();
-    const files = filesInfo["list"];
-    reader.onload = (e) => {
-      let data = e.target.result;
-      const wb = XLSX.read(data, { type: "binary" });
-      const wsName = wb.SheetNames[0];
+    let findIndex = filesInfo.findIndex((e) => e.id === "list");
+    console.log("handlepARSING FILE");
+    console.log(findIndex);
+    let result = [];
+    if (findIndex >= 0) {
+      const reader = new FileReader();
+      const files = filesInfo[findIndex].data;
+      reader.onload = (e) => {
+        let data = e.target.result;
+        const wb = XLSX.read(data, { type: "binary" });
+        const wsName = wb.SheetNames[0];
 
-      let worksheet = wb.Sheets[wsName];
-      // let headerSheet = wb.Sheets[wsName];
-      // headerSheet["!ref"] = "A1:C1";
-      // const data_1 = XLSX.utils.sheet_to_json(headerSheet, { header: 1 });
-      // console.log(data_1);
+        let worksheet = wb.Sheets[wsName];
+        // let headerSheet = wb.Sheets[wsName];
+        // headerSheet["!ref"] = "A1:C1";
+        // const data_1 = XLSX.utils.sheet_to_json(headerSheet, { header: 1 });
+        // console.log(data_1);
 
-      // if (data_1[0].length <= 0) {
-      //   alert("올바른 형태가 아닙니다.");
-      //   return false;
-      // }
+        // if (data_1[0].length <= 0) {
+        //   alert("올바른 형태가 아닙니다.");
+        //   return false;
+        // }
 
-      //  console.dir(data_1, { depths: null, colors: true });
+        //  console.dir(data_1, { depths: null, colors: true });
 
-      let row;
-      let rowNum;
-      let colNum;
-      let range = XLSX.utils.decode_range(worksheet["!ref"]);
+        let row;
+        let rowNum;
+        let colNum;
+        let range = XLSX.utils.decode_range(worksheet["!ref"]);
 
-      if (range.s.r !== 0) {
-        alert("올바른 형태가 아닙니다.");
-        return false;
-      }
-
-      for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
-        row = [];
-        for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
-          var nextCell =
-            worksheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
-          console.log(rowNum);
-          if (rowNum === 0) {
-            console.log(nextCell);
-          }
-          if (typeof nextCell === "undefined") {
-            row.push(void 0);
-          } else row.push(nextCell.w);
+        if (range.s.r !== 0) {
+          alert("올바른 형태가 아닙니다.");
+          return false;
         }
-        result.push(row);
-      }
-      let _data = result[0].filter((e) => e === undefined);
-      console.log(_data);
-      if (_data.length > 0) {
-        alert("header와 데이터가 올바른 형태가 아닙니다.");
-        addList([]);
-        return false;
-      } else {
-        addList({ ...excelData, result: result });
-      }
-    };
-    reader.readAsBinaryString(files);
-    //   }
+
+        for (rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
+          row = [];
+          for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
+            var nextCell =
+              worksheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
+            console.log(rowNum);
+            if (rowNum === 0) {
+              console.log(nextCell);
+            }
+            if (typeof nextCell === "undefined") {
+              row.push(void 0);
+            } else row.push(nextCell.w);
+          }
+          result.push(row);
+        }
+        let _data = result[0].filter((e) => e === undefined);
+        console.log(_data);
+        if (_data.length > 0) {
+          alert("header와 데이터가 올바른 형태가 아닙니다.");
+          setExcelData([]);
+          return false;
+        } else {
+          setExcelData({ ...excelData, result: result });
+        }
+      };
+      reader.readAsBinaryString(files);
+    }
   };
 
   const resetData = () => {
     if (window.confirm("데이터를 비우시겠습니까?")) {
-      addList([]);
+      setExcelData([]);
     }
   };
 
@@ -135,8 +135,8 @@ const Contents = ({
     return (
       <>
         <TABLE>
-          {Object.keys(excelData).length > 0 ? (
-            excelData.map((item, idx) => {
+          {excelData.hasOwnProperty("result") ? (
+            excelData["result"].map((item, idx) => {
               return (
                 <TR>
                   {item.map((it, ins) => {
@@ -165,7 +165,7 @@ const Contents = ({
           extension={".xls,.xlsx"}
           handleFile={handleUploadFile}
         />
-        {filesInfo.hasOwnProperty("list") ? (
+        {filesInfo && filesInfo.findIndex((e) => e.id === "list") >= 0 ? (
           <Button
             onClick={(e) => handleParsingFile(e)}
             backgroundColor={"green"}
@@ -177,7 +177,7 @@ const Contents = ({
 
         <TABLE>
           {Object.keys(excelData).length > 0 &&
-            excelData.map((item, idx) => {
+            excelData["result"].map((item, idx) => {
               return (
                 <TR>
                   {item.map((it, ins) => {
@@ -266,7 +266,7 @@ const Contents = ({
     }
 
     if (e.target.getAttribute("data-key") === "1") {
-      if (!filesInfo.hasOwnProperty("front")) {
+      if (!filesInfo.findIndex((e) => e.id === "front") < 0) {
         alert("이미지가 존재하지 않습니다.");
         return false;
       } else {
@@ -274,7 +274,7 @@ const Contents = ({
       }
       setItem1(item1.concat(obj));
     } else {
-      if (!filesInfo.hasOwnProperty("back")) {
+      if (!filesInfo.findIndex((e) => e.id === "back") < 0) {
         alert("이미지가 존재하지 않습니다.");
         return false;
       } else {
@@ -315,9 +315,12 @@ const Contents = ({
                 return <Items {...prop} />;
               })}
 
-            {Object(filesInfo["front"]).hasOwnProperty() &&
-            Object.keys(filesInfo["front"]).length > 0 ? (
-              <Image src={URL.createObjectURL(filesInfo["front"])} />
+            {filesInfo.findIndex((e) => e.id === "front") >= 0 ? (
+              <Image
+                src={URL.createObjectURL(
+                  filesInfo[filesInfo.findIndex((e) => e.id === "front")].data
+                )}
+              />
             ) : (
               <React.Fragment>
                 <SelectHeader>사진이 없습니다</SelectHeader>
@@ -346,9 +349,12 @@ const Contents = ({
                 return <Items {...prop} />;
               })}
 
-            {Object(filesInfo["back"]).hasOwnProperty() &&
-            Object.keys(filesInfo["back"]).length > 0 ? (
-              <Image src={URL.createObjectURL(filesInfo["back"])} />
+            {filesInfo.findIndex((e) => e.id === "back") >= 0 ? (
+              <Image
+                src={URL.createObjectURL(
+                  filesInfo[filesInfo.findIndex((e) => e.id === "back")].data
+                )}
+              />
             ) : (
               <React.Fragment>
                 <SelectHeader>사진이 없습니다</SelectHeader>
@@ -369,7 +375,7 @@ const Contents = ({
         <SelectHeader>변수 지정</SelectHeader>
         <SelctContents>
           {Object.keys(excelData).length > 0 &&
-            excelData[0].map((item, idx) => (
+            excelData["result"][0].map((item, idx) => (
               <Items
                 ref={el}
                 key={item + "-" + idx}
@@ -480,8 +486,8 @@ const Items = styled.div`
 
 const SelectHeader = styled.div`
   //height: 29px;
-  position: relative;
-  height: 100%;
+  //position: relative;
+  //height: 100%;
   width: 100%;
   margin: auto;
   text-align: center;

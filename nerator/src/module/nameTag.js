@@ -24,8 +24,12 @@ export default function nameTag(state = initialState, action) {
       console.log("=========");
       console.log(state);
       return state.findIndex((e) => e.id === action.id) >= 0
-        ? { ...state, [action.id]: action.data }
-        : state.concat({ [action.id]: action.data, id: action.id });
+        ? state.map((item) =>
+            item.id === action.id
+              ? { ...item, data: action.data[action.id] }
+              : item
+          )
+        : state.concat({ data: action.data[action.id], id: action.id });
 
     default:
       return state;

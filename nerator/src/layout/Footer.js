@@ -4,16 +4,15 @@ import Button from "../component/Button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 const Footer = (props) => {
-  const { excelData, filesInfo } = useSelector((state) => ({
-    excelData: state.nameTag.excelData,
-    filesInfo: state.nameTag.filesInfo,
-  }));
+  // const { excelData, filesInfo } = useSelector((state) => ({
+  //   excelData: state.nameTag.excelData,
+  //   filesInfo: state.nameTag.filesInfo,
+  // }));
 
   const dispatch = useDispatch();
 
   const testPrint = () => {
     console.log("testPrint");
-    console.log(filesInfo);
   };
 
   return (
