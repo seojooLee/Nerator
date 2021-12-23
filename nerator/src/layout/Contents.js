@@ -244,7 +244,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
   const onDrop = (e) => {
     console.log("=================");
 
-    console.log(currentItem.length);
+    console.log(currentItem);
     let obj = [];
     if (currentItem) {
       let move = e.target.getBoundingClientRect();
@@ -312,7 +312,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
               item1.map((itm, idx) => {
                 let prop = itm.props;
 
-                return <Items {...prop} />;
+                return <Items {...prop} className="position" />;
               })}
 
             {filesInfo.findIndex((e) => e.id === "front") >= 0 ? (
@@ -346,7 +346,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
               item2.map((itm, idx) => {
                 let prop = itm.props;
 
-                return <Items {...prop} />;
+                return <Items {...prop} className="position" />;
               })}
 
             {filesInfo.findIndex((e) => e.id === "back") >= 0 ? (
@@ -481,6 +481,10 @@ const Items = styled.div`
     cursor: grabbing;
     cursor: --moz-grabbing;
     cursor: -webkit-grabbing;
+  }
+
+  .position {
+    position: fixed;
   }
 `;
 
