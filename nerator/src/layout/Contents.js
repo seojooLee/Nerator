@@ -250,6 +250,8 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
       let move = e.target.getBoundingClientRect();
       let client_x = e.clientX - move.left;
       let client_y = e.clientY - move.top;
+
+      console.log(client_x + " : " + client_y);
       setLocation({ id: currentItem, x: client_x, y: client_y });
 
       const elementAssign = Object.assign({}, currentItem);
@@ -261,6 +263,8 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
       obj = {
         id: el.current,
         props: reactHandler,
+        x: client_x,
+        y: client_y,
       };
       //  setCurrentItem("");
     }
@@ -312,7 +316,15 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
               item1.map((itm, idx) => {
                 let prop = itm.props;
 
-                return <Items {...prop} className="position" />;
+                return (
+                  <Items
+                    {...prop}
+                    className={"drop"}
+                    drop={true}
+                    x={itm.x}
+                    y={itm.y}
+                  />
+                );
               })}
 
             {filesInfo.findIndex((e) => e.id === "front") >= 0 ? (
@@ -345,8 +357,16 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
             {item2 &&
               item2.map((itm, idx) => {
                 let prop = itm.props;
-
-                return <Items {...prop} className="position" />;
+                console.log(locList);
+                return (
+                  <Items
+                    {...prop}
+                    className={"drop"}
+                    drop={true}
+                    x={itm.x}
+                    y={itm.y}
+                  />
+                );
               })}
 
             {filesInfo.findIndex((e) => e.id === "back") >= 0 ? (
@@ -385,6 +405,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
                 isDragging
                 onDragStart={onDragEnter}
                 onDragEnd={(e) => setIsDragOver1(false)}
+                drop={false}
               >
                 {item}
               </Items>
@@ -438,12 +459,14 @@ const WrapItem = styled.div`
 
 const ThumbNail = styled.div`
   width: 41.23rem;
+  position: relative;
   margin-top: 4rem;
   margin-bottom: 1.5rem;
   height: 17rem;
   border: 1px solid black;
   background-color: ${(props) => (props.isDragOver ? " #d6d4d4" : " #e8e8e8")};
   border: ${(props) => (props.isDragOver ? " 4px dashed black" : " none")};
+  overflow: hidden;
 `;
 
 const Image = styled.img`
@@ -460,6 +483,10 @@ const SelectContainer = styled.div`
 `;
 
 const Items = styled.div`
+  position: ${(props) => (props.drop ? "absolute" : "relative")};
+  left: ${(props) => (props.x > 0 ? props.x : 0)}px;
+  top: ${(props) => (props.y > 0 ? props.y : 0)}px;
+
   width: 6rem;
   height: 30px;
   text-align: center;
@@ -481,10 +508,6 @@ const Items = styled.div`
     cursor: grabbing;
     cursor: --moz-grabbing;
     cursor: -webkit-grabbing;
-  }
-
-  .position {
-    position: fixed;
   }
 `;
 
@@ -516,12 +539,20 @@ const SelctContents = styled.div`
 
 const TABLE = styled.table`
   width: 100%;
-  border-collapse: collapse;
+  border-spacing: 0;
+  border: 0.5px solid black;
 `;
 
-const TR = styled.tr``;
+const TR = styled.tr`
+  border: 0.5px solid black;
+
+  &:first-child {
+    background-color: aliceblue;
+  }
+`;
 const TD = styled.td`
   text-align: center;
+  border: 0.5px solid black;
   width: 30px;
 `;
 export default Contents;
