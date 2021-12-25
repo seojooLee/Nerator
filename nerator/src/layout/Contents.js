@@ -17,7 +17,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
   const [popType, setPopType] = useState("");
   const el = useRef(null);
   const [excelData, setExcelData] = useState([]);
-
+  var id = useRef(0);
   useEffect(() => {
     console.log("useEffect");
     console.log(excelData.result);
@@ -224,6 +224,13 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
     setCurrentItem(e.target);
   };
 
+  const handleDeleteItems = (e) => {
+    let key = e.target.getAttribute("data-key");
+    console.log(key);
+    console.log(item2);
+    setItem2(item2.filter((e) => e.key !== Number(key)));
+  };
+
   const [isDragOver1, setIsDragOver1] = useState(false);
   const [isDragOver2, setIsDragOver2] = useState(false);
 
@@ -261,6 +268,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
       const reactHandler = elementAssign[reactHandlerKey[0]];
 
       obj = {
+        key: id.current++,
         id: el.current,
         props: reactHandler,
         x: client_x,
@@ -357,15 +365,22 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
             {item2 &&
               item2.map((itm, idx) => {
                 let prop = itm.props;
-                console.log(locList);
+                console.log(itm);
                 return (
-                  <Items
-                    {...prop}
-                    className={"drop"}
-                    drop={true}
-                    x={itm.x}
-                    y={itm.y}
-                  />
+                  <>
+                    <Items
+                      {...prop}
+                      className={"drop"}
+                      drop={true}
+                      x={itm.x}
+                      y={itm.y}
+                    >
+                      {prop.children}
+                      <Cancel data-key={itm.key} onClick={handleDeleteItems}>
+                        X
+                      </Cancel>
+                    </Items>
+                  </>
                 );
               })}
 
@@ -482,35 +497,6 @@ const SelectContainer = styled.div`
   margin-top: 76px;
 `;
 
-const Items = styled.div`
-  position: ${(props) => (props.drop ? "absolute" : "relative")};
-  left: ${(props) => (props.x > 0 ? props.x : 0)}px;
-  top: ${(props) => (props.y > 0 ? props.y : 0)}px;
-
-  width: 6rem;
-  height: 30px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #1a8cff;
-  margin-left: 10px;
-  border-radius: 3px;
-  user-select: none;
-  cursor: ${(props) => (props.isDragging ? "grabbing" : "cursor")};
-
-  &:hover {
-    background-color: #0074e8;
-    color: white;
-  }
-  &:active {
-    background-color: #0683ff;
-    cursor: grabbing;
-    cursor: --moz-grabbing;
-    cursor: -webkit-grabbing;
-  }
-`;
-
 const SelectHeader = styled.div`
   //height: 29px;
   //position: relative;
@@ -555,4 +541,54 @@ const TD = styled.td`
   border: 0.5px solid black;
   width: 30px;
 `;
+
+const Cancel = styled.div`
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  width: 16px;
+  color: rgba(225, 0, 0, 1);
+  font-size: small;
+  text-align: center;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  user-select: none;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:active {
+    background-color: black;
+    color: red;
+  }
+`;
+
+const Items = styled.div`
+  position: ${(props) => (props.drop ? "absolute" : "relative")};
+  left: ${(props) => (props.x > 0 ? props.x : 0)}px;
+  top: ${(props) => (props.y > 0 ? props.y : 0)}px;
+
+  width: 6rem;
+  height: 30px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a8cff;
+  margin-left: 10px;
+  border-radius: 3px;
+  user-select: none;
+  cursor: ${(props) => (props.isDragging ? "grabbing" : "cursor")};
+
+  &:hover {
+    background-color: #0074e8;
+    color: white;
+  }
+  &:active {
+    background-color: #0683ff;
+    cursor: grabbing;
+    cursor: --moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+`;
+
 export default Contents;

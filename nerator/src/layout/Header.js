@@ -10,7 +10,7 @@ const Header = (props) => {
 };
 
 const Container = styled.div`
-  flex-shrink: 0; 
+  flex-shrink: 0;
   width: 100%;
   height: 56px;
   background-color: #ffee53;
@@ -18,6 +18,7 @@ const Container = styled.div`
   display: flex;
   position: sticky;
   top: 0px;
+  z-index: 1;
 `;
 const Logo = styled.span`
   padding: 1rem;
