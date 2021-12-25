@@ -251,13 +251,13 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
   const onDrop = (e) => {
     console.log("=================");
 
-    console.log(currentItem);
+    console.log(currentItem.getAttribute("data-key"));
+    let move = e.target.getBoundingClientRect();
+    let client_x = e.clientX - move.left;
+    let client_y = e.clientY - move.top;
+
     let obj = [];
     if (currentItem) {
-      let move = e.target.getBoundingClientRect();
-      let client_x = e.clientX - move.left;
-      let client_y = e.clientY - move.top;
-
       console.log(client_x + " : " + client_y);
       setLocation({ id: currentItem, x: client_x, y: client_y });
 
@@ -292,7 +292,20 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
       } else {
         setIsDragOver2(false);
       }
-      setItem2(item2.concat(obj));
+
+      let isExist = item2.findIndex(
+        (e, idx) => e.key === Number(currentItem.getAttribute("data-key"))
+      );
+
+      if (isExist >= 0) {
+        let copy = [...item2];
+        copy[isExist] = { ...copy[isExist], x: client_x, y: client_y };
+        console.log(copy[isExist]);
+        console.log("이미 있습니다.");
+        setItem2(copy);
+      } else {
+        setItem2(item2.concat(obj));
+      }
     }
   };
 
@@ -374,6 +387,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
                       drop={true}
                       x={itm.x}
                       y={itm.y}
+                      data-key={itm.key}
                     >
                       {prop.children}
                       <Cancel data-key={itm.key} onClick={handleDeleteItems}>
