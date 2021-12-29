@@ -300,8 +300,6 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
       if (isExist >= 0) {
         let copy = [...item2];
         copy[isExist] = { ...copy[isExist], x: client_x, y: client_y };
-        console.log(copy[isExist]);
-        console.log("이미 있습니다.");
         setItem2(copy);
       } else {
         setItem2(item2.concat(obj));
@@ -587,7 +585,9 @@ const Items = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a8cff;
+  background-color: ${(props) => (props.drop ? "none" : " #1a8cff")};
+  border: ${(props) => (props.drop ? "1px dashed black" : "none")};
+
   margin-left: 10px;
   border-radius: 3px;
   user-select: none;
