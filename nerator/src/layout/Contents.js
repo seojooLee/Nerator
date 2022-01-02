@@ -292,9 +292,15 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
       } else {
         setIsDragOver2(false);
       }
-
+      //Number(null) = 0
       let isExist = item2.findIndex(
-        (e, idx) => e.key === Number(currentItem.getAttribute("data-key"))
+        (e, idx) =>
+          e.key ===
+          Number(
+            currentItem.getAttribute("data-key") === null
+              ? -1
+              : currentItem.getAttribute("data-key")
+          )
       );
 
       if (isExist >= 0) {
