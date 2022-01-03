@@ -158,23 +158,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
 
   const uploadContents = useCallback(() => {
     return (
-      <>
-        <FileUpload
-          id={"list"}
-          text={"파일 업로드"}
-          extension={".xls,.xlsx"}
-          handleFile={handleUploadFile}
-        />
-        {filesInfo && filesInfo.findIndex((e) => e.id === "list") >= 0 ? (
-          <Button
-            onClick={(e) => handleParsingFile(e)}
-            backgroundColor={"green"}
-            text={"업로드"}
-          />
-        ) : (
-          ""
-        )}
-
+      <PopUpContainer>
         <TABLE>
           {Object.keys(excelData).length > 0 &&
             excelData["result"].map((item, idx) => {
@@ -187,7 +171,25 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
               );
             })}
         </TABLE>
-      </>
+
+        <PopUpButtonContainer>
+          <FileUpload
+            id={"list"}
+            text={"파일 업로드"}
+            extension={".xls,.xlsx"}
+            handleFile={handleUploadFile}
+          />
+          {filesInfo && filesInfo.findIndex((e) => e.id === "list") >= 0 ? (
+            <Button
+              onClick={(e) => handleParsingFile(e)}
+              backgroundColor={"green"}
+              text={"업로드"}
+            />
+          ) : (
+            ""
+          )}
+        </PopUpButtonContainer>
+      </PopUpContainer>
     );
   }, [excelData, filesInfo]);
 
@@ -226,9 +228,13 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
 
   const handleDeleteItems = (e) => {
     let key = e.target.getAttribute("data-key");
-    console.log(key);
-    console.log(item2);
-    setItem2(item2.filter((e) => e.key !== Number(key)));
+    let key2 = e.currentTarget.parentNode.getAttribute("data-position");
+    console.log(key2);
+    if (key2 === "1") {
+      setItem1(item1.filter((e) => e.key !== Number(key)));
+    } else {
+      setItem2(item2.filter((e) => e.key !== Number(key)));
+    }
   };
 
   const [isDragOver1, setIsDragOver1] = useState(false);
@@ -239,11 +245,13 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
 
   let clone = [];
   const onDragOver = (e) => {
-    // console.log(e.target.classList);'
     e.preventDefault();
+    console.log("onDragOver");
     if (e.target.getAttribute("data-key") === "1") {
+      console.log("number 1");
       setIsDragOver1(true);
     } else {
+      console.log("number2");
       setIsDragOver2(true);
     }
   };
@@ -251,7 +259,6 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
   const onDrop = (e) => {
     console.log("=================");
 
-    console.log(currentItem.getAttribute("data-key"));
     let move = e.target.getBoundingClientRect();
     let client_x = e.clientX - move.left;
     let client_y = e.clientY - move.top;
@@ -274,7 +281,6 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
         x: client_x,
         y: client_y,
       };
-      //  setCurrentItem("");
     }
 
     if (e.target.getAttribute("data-key") === "1") {
@@ -285,6 +291,23 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
         setIsDragOver1(false);
       }
       setItem1(item1.concat(obj));
+
+      let isExist = item1.findIndex(
+        (e, idx) =>
+          e.key ===
+          Number(
+            currentItem.getAttribute("data-key") === null
+              ? -1
+              : currentItem.getAttribute("data-key")
+          )
+      );
+      if (isExist >= 0) {
+        let copy = [...item1];
+        copy[isExist] = { ...copy[isExist], x: client_x, y: client_y };
+        setItem1(copy);
+      } else {
+        setItem1(item1.concat(obj));
+      }
     } else {
       if (!filesInfo.findIndex((e) => e.id === "back") < 0) {
         alert("이미지가 존재하지 않습니다.");
@@ -311,6 +334,12 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
         setItem2(item2.concat(obj));
       }
     }
+  };
+
+  const handleItemDragEnd = (e) => {
+    console.log("handleItemDragEnd");
+    setIsDragOver1(false);
+    setIsDragOver2(false);
   };
 
   return (
@@ -340,15 +369,23 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
             {item1 &&
               item1.map((itm, idx) => {
                 let prop = itm.props;
-
                 return (
-                  <Items
-                    {...prop}
-                    className={"drop"}
-                    drop={true}
-                    x={itm.x}
-                    y={itm.y}
-                  />
+                  <>
+                    <Items
+                      {...prop}
+                      className={"drop"}
+                      drop={true}
+                      x={itm.x}
+                      y={itm.y}
+                      data-position="1"
+                      data-key={itm.key}
+                    >
+                      {prop.children}
+                      <Cancel data-key={itm.key} onClick={handleDeleteItems}>
+                        X
+                      </Cancel>
+                    </Items>
+                  </>
                 );
               })}
 
@@ -391,6 +428,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
                       drop={true}
                       x={itm.x}
                       y={itm.y}
+                      data-position="2"
                       data-key={itm.key}
                     >
                       {prop.children}
@@ -437,7 +475,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
                 draggable={true}
                 isDragging
                 onDragStart={onDragEnter}
-                onDragEnd={(e) => setIsDragOver1(false)}
+                onDragEnd={(e) => handleItemDragEnd(e)}
                 drop={false}
               >
                 {item}
@@ -500,6 +538,10 @@ const ThumbNail = styled.div`
   background-color: ${(props) => (props.isDragOver ? " #d6d4d4" : " #e8e8e8")};
   border: ${(props) => (props.isDragOver ? " 4px dashed black" : " none")};
   overflow: hidden;
+
+  &:-moz-drag-over {
+    background-color: pink;
+  }
 `;
 
 const Image = styled.img`
@@ -544,20 +586,31 @@ const SelctContents = styled.div`
 const TABLE = styled.table`
   width: 100%;
   border-spacing: 0;
-  border: 0.5px solid black;
 `;
 
 const TR = styled.tr`
-  border: 0.5px solid black;
-
   &:first-child {
     background-color: aliceblue;
   }
 `;
 const TD = styled.td`
   text-align: center;
-  border: 0.5px solid black;
+
   width: 30px;
+`;
+
+const PopUpContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
+
+const PopUpButtonContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
 `;
 
 const Cancel = styled.div`
