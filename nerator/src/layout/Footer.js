@@ -1,22 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "../component/Button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import Print from "./Print";
 const Footer = (props) => {
-  // const { excelData, filesInfo } = useSelector((state) => ({
-  //   excelData: state.nameTag.excelData,
-  //   filesInfo: state.nameTag.filesInfo,
-  // }));
-
-  const dispatch = useDispatch();
+  const [visibleImg, setVisibleImg] = useState(false);
+  const { locData, filesInfo } = useSelector((state) => ({
+    locData: state.location.locData,
+    filesInfo: state.nameTag,
+  }));
 
   const testPrint = () => {
     console.log("testPrint");
+    console.log(locData);
+    console.log(filesInfo);
+    setVisibleImg(true);
+    window.print();
   };
 
   return (
     <Container>
+      {visibleImg && <Print />}
+
       <ButtonContainer>
         <Button
           text="TEST PRINT"

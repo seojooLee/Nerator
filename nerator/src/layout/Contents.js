@@ -247,6 +247,9 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
   const onDragOver = (e) => {
     e.preventDefault();
     console.log("onDragOver");
+
+    console.log(e.target.getAttribute("data-key"));
+
     if (e.target.getAttribute("data-key") === "1") {
       console.log("number 1");
       setIsDragOver1(true);
@@ -391,6 +394,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
 
             {filesInfo.findIndex((e) => e.id === "front") >= 0 ? (
               <Image
+                data-key="1"
                 src={URL.createObjectURL(
                   filesInfo[filesInfo.findIndex((e) => e.id === "front")].data
                 )}
@@ -442,6 +446,7 @@ const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
 
             {filesInfo.findIndex((e) => e.id === "back") >= 0 ? (
               <Image
+                data-key="2"
                 src={URL.createObjectURL(
                   filesInfo[filesInfo.findIndex((e) => e.id === "back")].data
                 )}
