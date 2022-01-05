@@ -12,16 +12,30 @@ const Footer = (props) => {
   }));
 
   const testPrint = () => {
+    // setVisibleImg(true);
+    const content = document.getElementById("printArea");
+    const iframe = document.getElementById("ifm").contentWindow;
+    console.log(content);
+    iframe.document.open();
+    iframe.document.write(content.innerHTML);
+    iframe.document.close();
+    iframe.focus();
+    iframe.print();
     console.log("testPrint");
     console.log(locData);
     console.log(filesInfo);
-    setVisibleImg(true);
-    window.print();
+
+    const excel = filesInfo.findIndex((e) => e.id === "list");
+    console.log(filesInfo[excel]["data"]);
+
+    // window.print();
   };
 
   return (
     <Container>
-      {visibleImg && <Print />}
+      {visibleImg && <Print id="printArea">test</Print>}
+      <Print id="printArea">test ok </Print>
+      <iframe id="ifm" style={{ height: "0px", width: "0px" }}></iframe>
 
       <ButtonContainer>
         <Button
