@@ -7,8 +7,6 @@ export const updateLocation = (data) => ({ type: UPDATE_LOCATION, data });
 const initialStae = { locData: [] };
 
 export default function location(state = initialStae, action) {
-  console.log(action);
-  console.log(action.data);
   switch (action.type) {
     case UPDATE_LOCATION:
       return {

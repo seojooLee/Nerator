@@ -21,12 +21,8 @@ const Footer = (props) => {
     iframe.document.close();
     iframe.focus();
     iframe.print();
-    console.log("testPrint");
-    console.log(locData);
-    console.log(filesInfo);
 
-    const excel = filesInfo.findIndex((e) => e.id === "list");
-    console.log(filesInfo[excel]["data"]);
+    console.log("iframe active");
 
     // window.print();
   };

@@ -9,20 +9,12 @@ export const addNameTag = (data, id) => ({ type: ADD_NAMETAG, data, id });
 const initialState = [];
 //리듀서
 export default function nameTag(state = initialState, action) {
-  var id = action.id;
   switch (action.type) {
     case ADD_LIST:
       return {
         excelData: action.data,
       };
     case ADD_NAMETAG:
-      // console.log(
-      //   state.findIndex((e) =>
-      //     console.log("findIndex : " + e.id + "action.id : " + action.id)
-      //   )
-      // );
-      console.log("=========");
-      console.log(state);
       return state.findIndex((e) => e.id === action.id) >= 0
         ? state.map((item) =>
             item.id === action.id

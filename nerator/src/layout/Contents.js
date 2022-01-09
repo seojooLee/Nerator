@@ -11,12 +11,18 @@ import PopUp from "../component/Popup";
 import FileUpload from "../component/FileUpload";
 import * as XLSX from "xlsx";
 
-const Contents = ({ filesInfo = [], addNameTag, setLocation, locList }) => {
+const Contents = ({
+  excelData = [],
+  filesInfo = [],
+  addNameTag,
+  setLocation,
+  setExcelData,
+}) => {
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState("");
   const [popType, setPopType] = useState("");
   const el = useRef(null);
-  const [excelData, setExcelData] = useState([]);
+  //const [excelData, setExcelData] = useState([]);
   var id = useRef(0);
   useEffect(() => {
     console.log("useEffect");
