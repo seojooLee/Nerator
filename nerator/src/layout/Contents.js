@@ -21,8 +21,29 @@ const Contents = ({
   const [open, setOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState("");
   const [popType, setPopType] = useState("");
+  const [itemList, setItemList] = useState([]);
   const el = useRef(null);
-  //const [excelData, setExcelData] = useState([]);
+  const key = useRef("");
+  const [selectSize, setSelectSize] = useState("");
+
+  const sizeOption = [
+    {
+      name: "미국 표준 명함",
+      subText: "1050*600",
+    },
+    {
+      name: "유럽 명함",
+      subText: "1003*649",
+    },
+    {
+      name: "미니/스키니/슬림 명함",
+      subText: "300*900",
+    },
+    {
+      name: "사각형 명함",
+      subText: "750*750",
+    },
+  ]; //const [excelData, setExcelData] = useState([]);
   var id = useRef(0);
   useEffect(() => {
     console.log("useEffect");
@@ -142,15 +163,7 @@ const Contents = ({
       <>
         <TABLE>
           {excelData.hasOwnProperty("result") ? (
-            excelData["result"].map((item, idx) => {
-              return (
-                <TR>
-                  {item.map((it, ins) => {
-                    return <TD>{it}</TD>;
-                  })}
-                </TR>
-              );
-            })
+            0
           ) : (
             <>
               <SelectHeader>데이터가 없습니다.</SelectHeader>
@@ -221,13 +234,13 @@ const Contents = ({
   );
 
   const onDragEnter = (e) => {
-    console.log(e.target);
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.dropEffect = "move";
     e.dataTransfer.setData("id", e.target.getAttribute("data-item"));
     e.dataTransfer.setData("text/html", e.target);
     e.dataTransfer.setDragImage(e.target, 20, 20);
     e.target.classList.add("drag");
+    key.current = e.target.getAttribute("data-item");
 
     setCurrentItem(e.target);
   };
@@ -252,21 +265,21 @@ const Contents = ({
   let clone = [];
   const onDragOver = (e) => {
     e.preventDefault();
-    console.log("onDragOver");
-
-    console.log(e.target.getAttribute("data-key"));
 
     if (e.target.getAttribute("data-key") === "1") {
-      console.log("number 1");
       setIsDragOver1(true);
     } else {
-      console.log("number2");
       setIsDragOver2(true);
     }
   };
 
+  useEffect(() => {
+    console.log(itemList);
+  }, [itemList]);
+
   const onDrop = (e) => {
     console.log("=================");
+    console.log(key.current);
 
     let move = e.target.getBoundingClientRect();
     let client_x = e.clientX - move.left;
@@ -284,6 +297,8 @@ const Contents = ({
       const reactHandler = elementAssign[reactHandlerKey[0]];
 
       obj = {
+        type: e.target.getAttribute("data-key"),
+        itm: key.current,
         key: id.current++,
         id: el.current,
         props: reactHandler,
@@ -292,7 +307,10 @@ const Contents = ({
       };
     }
 
+    setItemList({ ...itemList, [obj.key]: obj });
+
     if (e.target.getAttribute("data-key") === "1") {
+      // front
       if (!filesInfo.findIndex((e) => e.id === "front") < 0) {
         alert("이미지가 존재하지 않습니다.");
         return false;
@@ -318,6 +336,7 @@ const Contents = ({
         setItem1(item1.concat(obj));
       }
     } else {
+      //back
       if (!filesInfo.findIndex((e) => e.id === "back") < 0) {
         alert("이미지가 존재하지 않습니다.");
         return false;
@@ -366,7 +385,12 @@ const Contents = ({
           onClick={(e) => handleOpenListView(e)}
         />
       </HeaderContainer>
-
+      명함 사이즈 조정
+      <select>
+        {sizeOption.map((item, idx) => {
+          return <option> {item.name}</option>;
+        })}
+      </select>
       <ThumbNailContainer>
         <WrapItem>
           <ThumbNail
@@ -472,7 +496,6 @@ const Contents = ({
           />
         </WrapItem>
       </ThumbNailContainer>
-
       <SelectContainer>
         <SelectHeader>변수 지정</SelectHeader>
         <SelctContents>
@@ -494,7 +517,6 @@ const Contents = ({
             ))}
         </SelctContents>
       </SelectContainer>
-
       <PopUp
         open={open}
         title={popType === "view" ? "직원 명단 조회" : "직원 명단 업로드"}

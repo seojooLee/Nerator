@@ -31,7 +31,8 @@ const Print = (props) => {
   }
 
   return (
-    <Container id={props.id}>
+    <Container id={props.id} open={props.open}>
+      {props.open}
       {excelData.hasOwnProperty("result") &&
         excelData["result"].map((item, idx) => {
           return (
@@ -39,8 +40,6 @@ const Print = (props) => {
               {item.map((it, ins) => {
                 return (
                   <Group>
-                    <Item>{it}</Item>
-
                     {filesInfo.findIndex((e) => e.id === "front") >= 0 ? (
                       <Image
                         src={URL.createObjectURL(
@@ -80,6 +79,7 @@ const Container = styled.div`
   top: 0;
   position: fixed;
   bottom: 0;
+  display: ${(props) => (props.open ? " block" : " none")};
 `;
 
 const Group = styled.div`
@@ -89,8 +89,8 @@ const Group = styled.div`
 `;
 
 const Image = styled.img`
-  width: 1050px;
-  height: 600px;
+  width: 30%;
+  height: 30%;
   margin: 10px;
 `;
 

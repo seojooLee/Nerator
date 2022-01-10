@@ -5,38 +5,35 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import Print from "./Print";
 const Footer = (props) => {
-  const [visibleImg, setVisibleImg] = useState(false);
-  const { locData, filesInfo } = useSelector((state) => ({
-    locData: state.location.locData,
-    filesInfo: state.nameTag,
-  }));
+  const [displayArea, setDisplayArea] = useState(false);
 
   const testPrint = () => {
-    // setVisibleImg(true);
-    const content = document.getElementById("printArea");
-    const iframe = document.getElementById("ifm").contentWindow;
-    console.log(content);
-    iframe.document.open();
-    iframe.document.write(content.innerHTML);
-    iframe.document.close();
-    iframe.focus();
-    iframe.print();
-
-    console.log("iframe active");
-
+    setDisplayArea(true);
+    //const content = document.getElementById("printArea");
+    //const iframe = document.getElementById("ifm").contentWindow;
+    //console.log(content);
+    //iframe.document.open();
+    //iframe.document.write(content.innerHTML);
+    //iframe.document.close();
+    //iframe.focus();
+    //iframe.print();
+    //console.log("iframe active");
     // window.print();
   };
 
   return (
     <Container>
-      {visibleImg && <Print id="printArea">test</Print>}
+      <Print open={displayArea} id="printArea">
+        test
+      </Print>
+
       <Print id="printArea">test ok </Print>
       <iframe id="ifm" style={{ height: "0px", width: "0px" }}></iframe>
 
       <ButtonContainer>
         <Button
           text="TEST PRINT"
-          onClick={() => window.print()}
+          onClick={(e) => testPrint(e)}
           background="#32BA3F"
           fontColor="black"
           onClick={testPrint}
