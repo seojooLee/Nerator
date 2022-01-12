@@ -278,9 +278,6 @@ const Contents = ({
   }, [itemList]);
 
   const onDrop = (e) => {
-    console.log("=================");
-    console.log(key.current);
-
     let move = e.target.getBoundingClientRect();
     let client_x = e.clientX - move.left;
     let client_y = e.clientY - move.top;
@@ -306,8 +303,20 @@ const Contents = ({
         y: client_y,
       };
     }
+    const type = e.target.getAttribute("data-key");
 
-    setItemList({ ...itemList, [obj.key]: obj });
+    let test = {
+      front: [{ key: 1 }, { key: 3 }],
+      back: [{ key: 2 }, { key: 4 }],
+    };
+
+    let array2 = test["front"].map((a) => {
+      return { ...a };
+    });
+    let c = array2.find((a) => a.key === currentItem.getAttribute("data-key"));
+    console.log(c);
+
+    setItemList({ ...itemList, type: { ...itemList.type } });
 
     if (e.target.getAttribute("data-key") === "1") {
       // front
@@ -411,7 +420,7 @@ const Contents = ({
                       x={itm.x}
                       y={itm.y}
                       data-position="1"
-                      data-key={itm.key}
+                      data-key={itm.key + "-" + idx}
                     >
                       {prop.children}
                       <Cancel data-key={itm.key} onClick={handleDeleteItems}>
@@ -463,7 +472,7 @@ const Contents = ({
                       x={itm.x}
                       y={itm.y}
                       data-position="2"
-                      data-key={itm.key}
+                      data-key={itm.key + "-" + idx}
                     >
                       {prop.children}
                       <Cancel data-key={itm.key} onClick={handleDeleteItems}>

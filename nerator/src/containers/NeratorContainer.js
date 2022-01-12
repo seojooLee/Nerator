@@ -11,10 +11,6 @@ function NeratorContainer() {
     filesInfo: state.nameTag,
   }));
 
-  const test = useSelector((state) => console.log(state));
-  console.log("test");
-  console.log(test);
-
   const { locData } = useSelector((state) => ({
     locData: state.location.locData,
   }));

@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 const Print = (props) => {
-  const dispatch = useDispatch();
   const { filesInfo = [], excelData = [] } = useSelector((state) => ({
     locData: state.location.locData,
     excelData: state.excel,
