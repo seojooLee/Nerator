@@ -8,25 +8,11 @@ const Print = (props) => {
     filesInfo: state.nameTag,
   }));
 
-  useEffect(() => {
-    console.log("Print.js");
-    console.log(excelData);
-  }, [excelData]);
-
   const excel = filesInfo.findIndex((e) => e.id === "list");
   const front = filesInfo.findIndex((e) => e.id === "front");
   const back = filesInfo.findIndex((e) => e.id === "back");
 
   if (front.length === -1 || back.length === -1 || excel.length === -1) {
-    console.log("데이터가 없습니다.");
-  }
-
-  console.log(excelData);
-
-  console.log("excel : " + excel + " front " + front + " back : " + back);
-
-  if (excel >= 0) {
-    console.log(filesInfo[excel]["data"]);
   }
 
   return (

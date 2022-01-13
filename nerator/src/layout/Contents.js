@@ -46,12 +46,10 @@ const Contents = ({
   ]; //const [excelData, setExcelData] = useState([]);
   var id = useRef(0);
   useEffect(() => {
-    console.log("useEffect");
     console.log(excelData.result);
   }, [excelData]);
 
   const handleUploadFile = (e) => {
-    console.log(excelData);
     if (Object.keys(excelData).length > 0) {
       if (
         !window.confirm(
@@ -89,8 +87,6 @@ const Contents = ({
     //   return false;
     // }
     let findIndex = filesInfo.findIndex((e) => e.id === "list");
-    console.log("handlepARSING FILE");
-    console.log(findIndex);
     let result = [];
     if (findIndex >= 0) {
       const reader = new FileReader();
@@ -128,9 +124,7 @@ const Contents = ({
           for (colNum = range.s.c; colNum <= range.e.c; colNum++) {
             var nextCell =
               worksheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
-            console.log(rowNum);
             if (rowNum === 0) {
-              console.log(nextCell);
             }
             if (typeof nextCell === "undefined") {
               row.push(void 0);
@@ -139,7 +133,6 @@ const Contents = ({
           result.push(row);
         }
         let _data = result[0].filter((e) => e === undefined);
-        console.log(_data);
         if (_data.length > 0) {
           alert("header와 데이터가 올바른 형태가 아닙니다.");
           setExcelData([]);
@@ -225,7 +218,6 @@ const Contents = ({
 
   const handleOpenListView = useCallback(
     (e) => {
-      console.log(e.currentTarget.id);
       setPopType(e.currentTarget.id);
 
       setOpen(true);
@@ -248,7 +240,6 @@ const Contents = ({
   const handleDeleteItems = (e) => {
     let key = e.target.getAttribute("data-key");
     let key2 = e.currentTarget.parentNode.getAttribute("data-position");
-    console.log(key2);
     if (key2 === "1") {
       setItem1(item1.filter((e) => e.key !== Number(key)));
     } else {
@@ -282,9 +273,12 @@ const Contents = ({
     let client_x = e.clientX - move.left;
     let client_y = e.clientY - move.top;
 
+    console.log("key update");
+    console.log(currentItem.getAttribute("data-key"));
+    console.log("===================");
+
     let obj = [];
     if (currentItem) {
-      console.log(client_x + " : " + client_y);
       setLocation({ id: currentItem, x: client_x, y: client_y });
 
       const elementAssign = Object.assign({}, currentItem);
@@ -305,18 +299,26 @@ const Contents = ({
     }
     const type = e.target.getAttribute("data-key");
 
-    let test = {
-      front: [{ key: 1 }, { key: 3 }],
-      back: [{ key: 2 }, { key: 4 }],
-    };
+    if (currentItem.getAttribute("data-key") != null) {
+      console.log("====================================");
+      console.log("key가 있습니다. : " + currentItem.getAttribute("data-key"));
 
-    let array2 = test["front"].map((a) => {
-      return { ...a };
-    });
-    let c = array2.find((a) => a.key === currentItem.getAttribute("data-key"));
-    console.log(c);
+      let test = {
+        front: [{ key: 1 }, { key: 3 }],
+        back: [{ key: 2 }, { key: 4 }],
+      };
 
-    setItemList({ ...itemList, type: { ...itemList.type } });
+      let array2 = test["front"].map((a) => {
+        return { ...a };
+      });
+      let c = array2.find(
+        (a) => a.key === currentItem.getAttribute("data-key")
+      );
+      console.log(c);
+
+      setItemList({ ...itemList, type: { ...itemList.type, obj } });
+      console.log("====================================");
+    }
 
     if (e.target.getAttribute("data-key") === "1") {
       // front
@@ -420,7 +422,7 @@ const Contents = ({
                       x={itm.x}
                       y={itm.y}
                       data-position="1"
-                      data-key={itm.key + "-" + idx}
+                      data-key={itm.key}
                     >
                       {prop.children}
                       <Cancel data-key={itm.key} onClick={handleDeleteItems}>
@@ -462,7 +464,6 @@ const Contents = ({
             {item2 &&
               item2.map((itm, idx) => {
                 let prop = itm.props;
-                console.log(itm);
                 return (
                   <>
                     <Items
@@ -472,7 +473,7 @@ const Contents = ({
                       x={itm.x}
                       y={itm.y}
                       data-position="2"
-                      data-key={itm.key + "-" + idx}
+                      data-key={itm.key}
                     >
                       {prop.children}
                       <Cancel data-key={itm.key} onClick={handleDeleteItems}>
