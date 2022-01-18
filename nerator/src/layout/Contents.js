@@ -156,7 +156,16 @@ const Contents = ({
       <>
         <TABLE>
           {excelData.hasOwnProperty("result") ? (
-            0
+            Object.keys(excelData).length > 0 &&
+            excelData["result"].map((item, idx) => {
+              return (
+                <TR>
+                  {item.map((it, ins) => {
+                    return <TD>{it}</TD>;
+                  })}
+                </TR>
+              );
+            })
           ) : (
             <>
               <SelectHeader>데이터가 없습니다.</SelectHeader>
