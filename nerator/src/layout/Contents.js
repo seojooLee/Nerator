@@ -156,20 +156,22 @@ const Contents = ({
       <>
         <TABLE>
           {excelData.hasOwnProperty("result") ? (
-            Object.keys(excelData).length > 0 &&
-            excelData["result"].map((item, idx) => {
-              return (
-                <TR>
-                  {item.map((it, ins) => {
-                    return <TD>{it}</TD>;
-                  })}
-                </TR>
-              );
-            })
+            <>
+              {Object.keys(excelData).length > 0 &&
+                excelData["result"].map((item, idx) => {
+                  return (
+                    <TR>
+                      {item.map((it, ins) => {
+                        return <TD>{it}</TD>;
+                      })}
+                    </TR>
+                  );
+                })}
+              <Button text={"비우기"} onClick={resetData} />
+            </>
           ) : (
             <>
               <SelectHeader>데이터가 없습니다.</SelectHeader>
-              <Button text={"비우기"} onClick={resetData} />
             </>
           )}
         </TABLE>
