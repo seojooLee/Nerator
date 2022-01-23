@@ -408,11 +408,11 @@ const Contents = ({
         />
       </HeaderContainer>
       명함 사이즈 조정
-      <select>
+      <Select>
         {sizeOption.map((item, idx) => {
-          return <option> {item.name}</option>;
+          return <Option> {item.name}</Option>;
         })}
-      </select>
+      </Select>
       <ThumbNailContainer>
         <WrapItem>
           <ThumbNail
@@ -680,12 +680,31 @@ const Cancel = styled.div`
   user-select: none;
   font-weight: 500;
   cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
+  margin-left: 3em;
   &:active {
     background-color: black;
     color: red;
   }
 `;
+
+const Select = styled.select`
+  background-color: white;
+  outline: 1px solid gray;
+  padding: 5px;
+  border: none;
+
+  &,
+  option {
+    background-color: #ffee53;
+    color: black;
+  }
+`;
+
+const Option = styled.option``;
 
 const Items = styled.div`
   position: ${(props) => (props.drop ? "absolute" : "relative")};
