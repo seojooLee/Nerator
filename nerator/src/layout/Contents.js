@@ -1,15 +1,10 @@
-import React, {
-  cloneElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import Button from "../component/Button";
 import PopUp from "../component/Popup";
 import FileUpload from "../component/FileUpload";
 import * as XLSX from "xlsx";
+import Editor from "../component/Editor";
 
 const Contents = ({
   excelData = [],
@@ -19,6 +14,7 @@ const Contents = ({
   setExcelData,
 }) => {
   const [open, setOpen] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState("");
   const [popType, setPopType] = useState("");
   const [itemList, setItemList] = useState([]);
@@ -30,18 +26,26 @@ const Contents = ({
     {
       name: "미국 표준 명함",
       subText: "1050*600",
+      w: 1050,
+      h: 600,
     },
     {
       name: "유럽 명함",
       subText: "1003*649",
+      w: 1003,
+      h: 649,
     },
     {
       name: "미니/스키니/슬림 명함",
       subText: "300*900",
+      w: 300,
+      h: 900,
     },
     {
       name: "사각형 명함",
       subText: "750*750",
+      w: 750,
+      h: 750,
     },
   ]; //const [excelData, setExcelData] = useState([]);
   var id = useRef(0);
@@ -328,7 +332,6 @@ const Contents = ({
       console.log(c);
 
       setItemList({ ...itemList, type: { ...itemList.type, obj } });
-      console.log("====================================");
     }
 
     if (e.target.getAttribute("data-key") === "1") {
@@ -387,11 +390,18 @@ const Contents = ({
   };
 
   const handleItemDragEnd = (e) => {
-    console.log("handleItemDragEnd");
     setIsDragOver1(false);
     setIsDragOver2(false);
   };
 
+  useEffect(() => {
+    console.log(selectSize);
+  }, [selectSize]);
+
+  const handleOpenEditor = useCallback((e) => {
+    console.log("handleOpenEditor");
+    setIsEditorOpen(true);
+  }, []);
   return (
     <Container>
       {clone}
@@ -406,11 +416,20 @@ const Contents = ({
           text={"명단 조회"}
           onClick={(e) => handleOpenListView(e)}
         />
+        <Button
+          id="editor"
+          text="editor 열기"
+          onClick={(e) => handleOpenEditor(e)}
+        />
       </HeaderContainer>
       명함 사이즈 조정
-      <Select>
+      <Select
+        onChange={(e) =>
+          setSelectSize(sizeOption.find((item) => item.name === e.target.value))
+        }
+      >
         {sizeOption.map((item, idx) => {
-          return <Option> {item.name}</Option>;
+          return <Option value={item.name}>{item.name}</Option>;
         })}
       </Select>
       <ThumbNailContainer>
@@ -420,6 +439,8 @@ const Contents = ({
             onDrop={onDrop}
             data-key="1"
             onDragOver={onDragOver}
+            width={selectSize.w}
+            height={selectSize.h}
           >
             {item1 &&
               item1.map((itm, idx) => {
@@ -545,6 +566,7 @@ const Contents = ({
         ok={(e) => handleOkListUpload(e)}
         contents={popType === "view" ? dataListView() : uploadContents()}
       />
+      <Editor isOpen={isEditorOpen} varList={excelData?.result?.[0] || []} />
     </Container>
   );
 };
@@ -570,6 +592,7 @@ const HeaderContainer = styled.div`
 
 const ThumbNailContainer = styled.div`
   width: 100%;
+
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -583,11 +606,15 @@ const WrapItem = styled.div`
 `;
 
 const ThumbNail = styled.div`
+  //width: ${(props) => props.width}px;
+  //height: ${(props) => props.height}px;
+
   width: 41.23rem;
+  height: 17rem;
+
   position: relative;
   margin-top: 4rem;
   margin-bottom: 1.5rem;
-  height: 17rem;
   border: 1px solid black;
   background-color: ${(props) => (props.isDragOver ? " #d6d4d4" : " #e8e8e8")};
   border: ${(props) => (props.isDragOver ? " 4px dashed black" : " none")};
